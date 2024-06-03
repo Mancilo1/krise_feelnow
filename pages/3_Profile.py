@@ -119,13 +119,14 @@ def main_page():
                     occupation = st.text_input("Occupation:", value=user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '', key="occupation")
                     doctor = st.text_input("Doctor:", value=user_data['doctor'].iloc[0] if 'doctor' in user_data.columns else '', key="doctor")
                     doctor_email = st.text_input("Doctor's Email:", value=user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '', key="doctor_email")
-                    emergency_contact = st.text_input("Emergency Contact:", value=user_data['emergency_contact'].iloc[0] if 'emergency_contact' in user_data.columns else '', key="emergency_contact")
-
+                    
                 with col2:
                     birthday = st.date_input("Birthday:", value=pd.to_datetime(user_data['birthday'].iloc[0]), key="birthday")
                     address = st.text_area("Address:", value=user_data['address'].iloc[0] if 'address' in user_data.columns else '', key="address")
                     email = st.text_input("Email:", value=user_data['email'].iloc[0] if 'email' in user_data.columns else '', key="email")
-                    emergency_contact_number = st.text_input("Emergency Contact Number:", value=user_data['emergency_contact_number'].astype(str).iloc[0] if 'emergency_contact_number' in user_data.columns else '', key="emergency_contact_number")
+                    
+                emergency_contact = st.text_input("Emergency Contact:", value=user_data['emergency_contact'].iloc[0] if 'emergency_contact' in user_data.columns else '', key="emergency_contact")
+                emergency_contact_number = st.text_input("Emergency Contact Number:", value=user_data['emergency_contact_number'].astype(str).iloc[0] if 'emergency_contact_number' in user_data.columns else '', key="emergency_contact_number")
 
                 if st.button("Save Changes"):
                     formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
