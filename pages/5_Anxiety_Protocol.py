@@ -114,7 +114,7 @@ def anxiety_protocol():
                 'Cause': cause,
                 'Triggers': triggers,
                 'Symptoms': symptoms,
-                'New Symptoms': new_symptoms
+                'New Symptoms': new_symptoms,
                 'Help': help_response
             }
             new_entry_df = pd.DataFrame([new_entry])
