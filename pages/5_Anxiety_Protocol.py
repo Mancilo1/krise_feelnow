@@ -220,7 +220,7 @@ def anxiety_protocol():
         if st.checkbox("Tremor"): symptoms_list.append("Tremor")
         if st.checkbox("Weakness"): symptoms_list.append("Weakness")
             
-    return symptoms_list
+        return symptoms_list
 
     # Question 7: Did something Help
     st.subheader("Did something Help against the Anxiety?")
