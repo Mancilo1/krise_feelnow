@@ -9,7 +9,7 @@ import datetime
 
 # Constants
 DATA_FILE = "MyLoginTable.csv"
-DATA_COLUMNS = ['username', 'name', 'birthday', 'password', 'phone_number', 'address', 'occupation', 'emergency_contact_name', 'emergency_contact_number', 'email', 'doctor_email']
+DATA_COLUMNS = ['username', 'name', 'birthday', 'password', 'address', 'occupation', 'email', 'doctor_email']
 
 def init_github():
     """Initialize the GithubContents object."""
@@ -92,10 +92,10 @@ def main_page():
 
     if 'username' in st.session_state:
         username = st.session_state['username']
-        
+
         # Load user data
         user_data = st.session_state.df_users.loc[st.session_state.df_users['username'] == username]
-        
+
         if not user_data.empty:
             if 'edit_profile' not in st.session_state:
                 st.session_state.edit_profile = False
@@ -112,7 +112,7 @@ def main_page():
                     address = st.text_area("Address:", value=user_data['address'].iloc[0] if 'address' in user_data.columns else '', key="address")
                     email = st.text_input("Email:", value=user_data['email'].iloc[0] if 'email' in user_data.columns else '', key="email")
 
-                if st.button("Save Changes", key="save_changes"):
+                if st.button("Save Changes"):
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'name'] = name
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'birthday'] = birthday
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'address'] = address
@@ -120,17 +120,25 @@ def main_page():
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'email'] = email
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'doctor_email'] = doctor_email
 
+                    st.session_state.github.write_df(DATA_FILE, st.session_state.df_users, "updated user data")
+                    st.success("Profile updated successfully!")
+                    st.session_state.edit_profile = False
+                    st.experimental_rerun()
+
                 if st.button("Cancel"):
                     st.session_state.edit_profile = False
                     st.experimental_rerun()
             else:
-                st.write("Username:", username)
-                st.write("Name:", user_data['name'].iloc[0])
-                st.write("Birthday:", user_data['birthday'].iloc[0])
-                st.write("Address:", user_data['address'].iloc[0] if 'address' in user_data.columns else '')
-                st.write("Occupation:", user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '')
-                st.write("Email:", user_data['email'].iloc[0] if 'email' in user_data.columns else '')
-                st.write("Doctor's Email:", user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '')
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write("Name:", user_data['name'].iloc[0])
+                    st.write("Occupation:", user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '')
+                    st.write("Doctor's Email:", user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '')
+
+                with col2:
+                    st.write("Birthday:", user_data['birthday'].iloc[0])
+                    st.write("Address:", user_data['address'].iloc[0] if 'address' in user_data.columns else '')
+                    st.write("Email:", user_data['email'].iloc[0] if 'email' in user_data.columns else '')
 
                 if st.button("Edit Profile"):
                     st.session_state.edit_profile = True
@@ -139,8 +147,8 @@ def main_page():
             st.error("User data not found.")
     else:
         st.error("User not logged in.")
-        if st.button("Login/Register"):
-            st.switch_page("pages/1_login.py")
+        if st.button("Login/Register", key="login_register"):
+            st.switch_page("pages/2_Login.py")
 
 def anxiety_assessment():
     st.title("Anxiety Assessment")
