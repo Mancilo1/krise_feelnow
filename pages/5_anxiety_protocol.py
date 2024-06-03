@@ -60,7 +60,8 @@ def anxiety_protocol():
     st.subheader("What do you think could be the cause?")
     cause = st.text_area("Write your response here", key="cause", height=100)
     
-    st.subheader("Any specific triggers? For example Stress, Caffeine, Lack of Sleep, Social Event, Reminder of traumatic event")
+    st.subheader("Any specific triggers?")
+    st.write("For example Stress, Caffeine, Lack of Sleep, Social Event, Reminder of traumatic event")
     triggers = st.text_area("Write your response here", key="triggers", height=100)
 
     # Question 3: Symptoms
