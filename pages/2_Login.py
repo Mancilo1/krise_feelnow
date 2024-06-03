@@ -118,7 +118,8 @@ def switch_page(page_name):
 def main():
     init_github()
     init_credentials()
-    
+
+    # Initialize authentication state and display login/register options if not authenticated
     if 'authentication' not in st.session_state:
         st.session_state['authentication'] = False
 
