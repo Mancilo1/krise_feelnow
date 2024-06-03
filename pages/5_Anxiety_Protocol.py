@@ -24,7 +24,6 @@ def main():
             login_page()
         elif options == "Register":
             register_page()
-            
     else:
         st.sidebar.write(f"Logged in as {st.session_state['username']}")
          # Retrieve the emergency contact information from the DataFrame
