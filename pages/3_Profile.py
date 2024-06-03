@@ -144,7 +144,7 @@ def main():
             
         st.sidebar.write("_Please reload Website after logging out_")
     
-    display_emergency_contact()
+        display_emergency_contact()
 
 def main_page():
     logo_path = "Logo.jpeg"
