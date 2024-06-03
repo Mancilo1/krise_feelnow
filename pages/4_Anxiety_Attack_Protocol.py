@@ -39,7 +39,7 @@ def main():
             st.session_state.pop('username', None)
             st.switch_page("Main.py")
 
-        Display_emergency_contact()
+        display_emergency_contact()
 
 def format_phone_number(number):
     """Format phone number using phonenumbers library."""
