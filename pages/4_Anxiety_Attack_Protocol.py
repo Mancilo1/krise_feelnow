@@ -26,7 +26,6 @@ def main():
             register_page()
     else:
         st.sidebar.write(f"Logged in as {st.session_state['username']}")
-        st.sidebar.write("_Please reload Website after logging out_")
         # Retrieve the emergency contact information from the DataFrame
         user_data = st.session_state.df_users.loc[st.session_state.df_users['username'] == st.session_state['username']]
         if not user_data.empty:
@@ -36,6 +35,7 @@ def main():
         anxiety_attack_protocol()
 
         if st.sidebar.button("Logout"):
+            st.sidebar.write("_Please reload Website after logging out_")
             st.session_state['authentication'] = False
             st.session_state.pop('username', None)
             st.switch_page("Main.py")
