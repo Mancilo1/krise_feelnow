@@ -42,7 +42,7 @@ def anxiety_attack_protocol():
         if st.session_state.github.file_exists(data_file):
             st.session_state.data = st.session_state.github.read_df(data_file)
         else:
-            st.session_state.data = pd.DataFrame(columns=['Date', 'Time', 'Severity', 'Symptoms', 'Triggers', 'Help'])
+            st.session_state.data = pd.DataFrame(columns=['Date', 'Time', 'Severity', 'Symptoms','New Symptoms', 'Triggers', 'New Triggers', 'Help'])
 
     st.title("Anxiety Attack Protocol")
 
@@ -85,12 +85,11 @@ def anxiety_attack_protocol():
     if 'symptoms' not in st.session_state:
         st.session_state.symptoms = []
 
-    new_symptom = st.text_input("Add new symptom:")
-    if st.button("Add Symptom") and new_symptom:
-        st.session_state.symptoms.append(new_symptom)
+    for symptoms in st.session_state.symptoms:
+        st.write(symptoms)
 
-    for symptom in st.session_state.symptoms:
-        st.write(symptom)
+    st.subheader("Any Symptoms that are not listed?")
+    new_symptoms = st.text_area("Write your response here", key="new_symptoms", height=50)
 
     # Question 4: Triggers
     st.subheader("Triggers:")
@@ -106,6 +105,9 @@ def anxiety_attack_protocol():
     for trigger in st.session_state.triggers:
         st.write(trigger)
 
+    st.subheader("Any Triggers that are not listed?")
+    new_triggers = st.text_area("Write your response here", key="new_triggers", height=50)
+
     # Question 5: Did something Help against the attack?
     st.subheader("Did something Help against the attack?")
     help_response = st.text_area("Write your response here", height=100)
@@ -117,8 +119,10 @@ def anxiety_attack_protocol():
                 'Date': date_selected,
                 'Time': [entry['time'] for entry in st.session_state.time_severity_entries],
                 'Severity': [entry['severity'] for entry in st.session_state.time_severity_entries],
-                'Symptoms': st.session_state.symptoms,
+                'Symptoms': symptoms,
+                'New Symptoms': new_symptoms,
                 'Triggers': triggers,
+                'New Triggers': new_triggers,
                 'Help': help_response
             }
             # Create a DataFrame from the new entry
