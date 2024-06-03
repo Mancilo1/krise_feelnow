@@ -131,13 +131,6 @@ def main():
         st.write("### You are already logged in")
         show_gif()
         st.sidebar.write(f"Logged in as {st.session_state['username']}")
-        logout_button = st.button("Logout")
-        if logout_button:
-            st.session_state['authentication'] = False
-            st.session_state.pop('username', None)
-            st.switch_page("Main.py")
-            st.experimental_rerun()
-
         if st.sidebar.button("Logout"):
             st.session_state['authentication'] = False
             st.session_state.pop('username', None)
