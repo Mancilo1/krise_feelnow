@@ -1,12 +1,12 @@
 import streamlit as st
+import pandas as pd
 import binascii
 import bcrypt
+import datetime
 import time
-import pandas as pd
+import phonenumbers
 from github_contents import GithubContents
 from PIL import Image
-import datetime
-import phonenumbers
 
 # Constants
 DATA_FILE = "MyLoginTable.csv"
@@ -28,26 +28,12 @@ def init_credentials():
             st.session_state.df_users = st.session_state.github.read_df(DATA_FILE)
         else:
             st.session_state.df_users = pd.DataFrame(columns=DATA_COLUMNS)
-        # Ensure phone number columns are treated as strings
+            
         st.session_state.df_users['emergency_contact_number'] = st.session_state.df_users['emergency_contact_number'].astype(str)
-
-def login_page():
-    """ Login an existing user. """
-    logo_path = "Logo.jpeg"  # Ensure this path is correct relative to your script location
-    st.image(logo_path, use_column_width=True)
-    st.write("---")
-    st.title("Login")
-    with st.form(key='login_form'):
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
-        if st.form_submit_button("Login"):
-            authenticate(username, password)
-            if st.session_state['authentication']:
-                st.switch_page("pages/3_Profile.py")
 
 def register_page():
     """ Register a new user. """
-    logo_path = "Logo.jpeg"  # Ensure this path is correct relative to your script location
+    logo_path = "Logo.jpeg"
     st.image(logo_path, use_column_width=True)
     st.write("---")
     st.title("Register")
@@ -63,6 +49,7 @@ def register_page():
         new_emergency_contact_name = st.text_input("Emergengy Contact Name")
         new_emergency_contact_number = st.text_input("Emergency Contact Number")
         new_password = st.text_input("New Password", type="password")
+        
         if st.form_submit_button("Register"):
             hashed_password = bcrypt.hashpw(new_password.encode('utf8'), bcrypt.gensalt())
             hashed_password_hex = binascii.hexlify(hashed_password).decode()
@@ -75,6 +62,20 @@ def register_page():
                 st.session_state.df_users['emergency_contact_number'] = st.session_state.df_users['emergency_contact_number'].astype(str)
                 st.session_state.github.write_df(DATA_FILE, st.session_state.df_users, "added new user")
                 st.success("Registration successful! You can now log in.")
+
+def login_page():
+    """ Login an existing user. """
+    logo_path = "Logo.jpeg"
+    st.image(logo_path, use_column_width=True)
+    st.write("---")
+    st.title("Login")
+    with st.form(key='login_form'):
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+        if st.form_submit_button("Login"):
+            authenticate(username, password)
+            if st.session_state['authentication']:
+                st.switch_page("pages/3_Profile.py")
 
 def authenticate(username, password):
     """ Authenticate the user. """
@@ -94,206 +95,6 @@ def authenticate(username, password):
             st.error('Incorrect password')
     else:
         st.error('Username not found')
-
-def main_page():
-    logo_path = "Logo.jpeg"  # Ensure this path is correct relative to your script location
-    st.image(logo_path, use_column_width=True)
-    st.write("---")
-    st.title("Your Anxiety Tracker Journal")
-    st.subheader("Profile")
-    
-    if 'username' in st.session_state:
-        username = st.session_state['username']
-
-        # Load user data
-        user_data = st.session_state.df_users.loc[st.session_state.df_users['username'] == username]
-
-        if not user_data.empty:
-            if 'edit_profile' not in st.session_state:
-                st.session_state.edit_profile = False
-
-            if st.session_state.edit_profile:
-                col1, col2 = st.columns(2)
-                with col1:
-                    name = st.text_input("Name:", value=user_data['name'].iloc[0])
-                    occupation = st.text_input("Occupation:", value=user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '')
-                    doctor = st.text_input("Doctor:", value=user_data['doctor'].iloc[0] if 'doctor' in user_data.columns else '')
-                    doctor_email = st.text_input("Doctor's Email:", value=user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '')
-                    emergency_contact_name = st.text_input("Emergency Contact Name:", value=user_data['emergency_contact_name'].iloc[0] if 'emergency_contact_name' in user_data.columns else '')
-
-                with col2:
-                    birthday = st.date_input("Birthday:", value=pd.to_datetime(user_data['birthday'].iloc[0]))
-                    address = st.text_area("Address:", value=user_data['address'].iloc[0] if 'address' in user_data.columns else '')
-                    email = st.text_input("Email:", value=user_data['email'].iloc[0] if 'email' in user_data.columns else '')
-                    emergency_contact_number = st.text_input("Emergency Contact Number:", value=user_data['emergency_contact_number'].astype(str).iloc[0] if 'emergency_contact_number' in user_data.columns else '')
-
-                if st.button("Save Changes"):
-                    formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
-                    
-                    #  Save or clear emergency contact number if empty
-                    if formatted_emergency_contact_number is not None:
-                        st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact_number'] = formatted_emergency_contact_number
-                    else:
-                        st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact_number'] = ''
-
-                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'name'] = name
-                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'birthday'] = birthday
-                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'address'] = address
-                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'occupation'] = occupation
-                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'email'] = email
-                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'doctor'] = doctor
-                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'doctor_email'] = doctor_email
-                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact_name'] = emergency_contact_name
-
-                    # Ensure phone number columns are treated as strings
-                    st.session_state.df_users['emergency_contact_number'] = st.session_state.df_users['emergency_contact_number'].astype(str)
-
-                    st.session_state.github.write_df(DATA_FILE, st.session_state.df_users, "updated user data")
-                    st.success("Profile updated successfully!")
-                    st.session_state.edit_profile = False
-                    st.experimental_rerun()
-
-                if st.button("Cancel"):
-                    st.session_state.edit_profile = False
-                    st.experimental_rerun()
-            else:
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.write("Name:", user_data['name'].iloc[0])
-                    st.write("Occupation:", user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '')
-                    st.write("Doctor:", user_data['doctor'].iloc[0] if 'doctor' in user_data.columns else '')
-                    st.write("Doctor's Email:", user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '')
-                    st.write("Emergency Contact Name:", user_data['emergency_contact_name'].iloc[0] if 'emergency_contact_name' in user_data.columns else '')
-
-                with col2:
-                    st.write("Birthday:", user_data['birthday'].iloc[0])
-                    st.write("Address:", user_data['address'].iloc[0] if 'address' in user_data.columns else '')
-                    st.write("Email:", user_data['email'].iloc[0] if 'email' in user_data.columns else '')
-                    st.write("Emergency Contact Number:", format_phone_number(user_data['emergency_contact_number'].astype(str).iloc[0]) if 'emergency_contact_number' in user_data.columns else '')
-                
-                if st.button("Edit Profile"):
-                    st.session_state.edit_profile = True
-                    st.experimental_rerun()
-        else:
-            st.error("User data not found.")
-    else:
-        st.error("User not logged in.")
-        if st.button("Login/Register"):
-            st.switch_page("pages/2_Login.py")
-
-def format_phone_number(number):
-    """Format phone number using phonenumbers library."""
-    if not number or pd.isna(number) or number == 'nan':
-        return None
-    number_str = str(number).strip()
-    if number_str.endswith('.0'):
-        number_str = number_str[:-2]  # Remove trailing '.0'
-    try:
-        phone_number = phonenumbers.parse(number_str, "CH")  # "CH" is for Switzerland
-        if phonenumbers.is_valid_number(phone_number):
-            return phonenumbers.format_number(phone_number, phonenumbers.PhoneNumberFormat.E164)
-        else:
-            return number_str  # Return the original number if invalid
-    except phonenumbers.NumberParseException:
-        return number_str  # Return the original number if parsing fails
-
-def display_emergency_contact():
-    """Display the emergency contact in the sidebar if it exists."""
-    if 'emergency_contact_name' in st.session_state and 'emergency_contact_number' in st.session_state:
-        emergency_contact_name = st.session_state['emergency_contact_name']
-        emergency_contact_number = st.session_state['emergency_contact_number']
-
-        if emergency_contact_number:
-            formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
-            st.sidebar.write(f"Emergency Contact: {emergency_contact_name}")
-            if formatted_emergency_contact_number:
-                st.sidebar.markdown(f"[{formatted_emergency_contact_number}](tel:{formatted_emergency_contact_number})")
-            else:
-                st.sidebar.write("No valid emergency contact number available.")
-        else:
-            st.sidebar.write("No emergency contact number available.")
-    else:
-        st.sidebar.write("No emergency contact information available.")
-
-def anxiety_assessment():
-    st.title("Anxiety Assessment")
-    
-    if "step" not in st.session_state:
-        st.session_state.step = 1
-
-    if st.session_state.step == 1:
-        st.write("### Do you feel like you're having an Anxiety Attack right now?")
-        if st.button("Yes"):
-            st.switch_page("pages/4_Anxiety_Attack_Protocol.py")
-        if st.button("No"):
-            st.session_state.step = 2
-            st.experimental_rerun()
-
-    if st.session_state.step == 2:
-        st.write("### Are you anxious right now?")
-        if st.button("Yes "):
-            st.switch_page("pages/5_Anxiety_Protocol.py")
-        if st.button("No "):
-            st.session_state.step = 3
-            st.experimental_rerun()
-
-    if st.session_state.step == 3:
-        show_gif()
-        if st.button("Reassess your feelings"):
-            st.session_state.step = 1
-            st.experimental_rerun()
-
-def show_gif():
-    gif_url = "https://64.media.tumblr.com/28fad0005f6861c08f2c07697ff74aa4/tumblr_n4y0patw7Q1rn953bo1_500.gif"
-    gif_html = f'<img src="{gif_url}" style="width:100%;">'
-    st.markdown(gif_html, unsafe_allow_html=True)
-    
-def show_saved_entries():
-    st.subheader("Saved Entries from Anxiety Attack Protocol")
-    username = st.session_state['username']
-    data_file_attack = f"{username}_anxiety_attack_data.csv"
-    data_file_anxiety = f"{username}_anxiety_protocol_data.csv"
-    
-    if st.session_state.github.file_exists(data_file_attack):
-        anxiety_attack_data = st.session_state.github.read_df(data_file_attack)
-        st.write(anxiety_attack_data)
-    else:
-        st.write("No saved entries from Anxiety Attack Protocol.")
-    
-    st.subheader("Saved Entries from Anxiety Protocol")
-    if st.session_state.github.file_exists(data_file_anxiety):
-        anxiety_protocol_data = st.session_state.github.read_df(data_file_anxiety)
-        st.write(anxiety_protocol_data)
-    else:
-        st.write("No saved entries from Anxiety Protocol.")
-
-def german_protocols():
-    st.title("German Protocols")
-    st.subheader("Anxiety Attack Protocol")
-    st.write("Click on the button to download the german version.")
-    st.write("Um die Deutsche PDF version des 'Anxiety Attack Protocol' herunterzuladen, auf 'Download Panickattacke Protokoll' klicken.")
-    with open("Panickattacke Protokoll.pdf", "rb") as pdf_file:
-        pdf_bytes = pdf_file.read()
-        st.download_button(
-            label="Download Panickattacke Protokoll",
-            data=pdf_bytes,
-            file_name="Panickattacke Protokoll.pdf",
-            mime="application/pdf",
-            key="download_panic_protocol"
-        )
-    st.write("---")
-    st.subheader("Anxiety Protocol")
-    st.write("Click on the button to download the german version.")
-    st.write("Um die Deutsche PDF version des 'Anxiety Protocol' herunterzuladen, auf 'Download Angstprotokoll' klicken.")
-    with open("Angstprotokoll.pdf", "rb") as pdf_file:
-        pdf_bytes = pdf_file.read()
-        st.download_button(
-            label="Download Angstprotokoll",
-            data=pdf_bytes,
-            file_name="Angstprotokoll.pdf",
-            mime="application/pdf",
-            key="download_anxiety_protocol"
-        )
 
 def switch_page(page_name):
     st.success(f"Redirecting to {page_name.replace('_', ' ')} page...")
@@ -338,6 +139,210 @@ def main():
         st.sidebar.write("_Please reload Website after logging out_")
     
     display_emergency_contact()
+
+def main_page():
+    logo_path = "Logo.jpeg"
+    st.image(logo_path, use_column_width=True)
+    st.write("---")
+    st.title("Your Anxiety Tracker Journal")
+    st.subheader("Profile")
+    
+    if 'username' in st.session_state:
+        username = st.session_state['username']
+
+        # Load user data
+        user_data = st.session_state.df_users.loc[st.session_state.df_users['username'] == username]
+
+        if not user_data.empty:
+            if 'edit_profile' not in st.session_state:
+                st.session_state.edit_profile = False
+
+            # To permit the edditing of users profile and saving the eddited information to dataframe
+            if st.session_state.edit_profile:
+                col1, col2 = st.columns(2)
+                with col1:
+                    name = st.text_input("Name:", value=user_data['name'].iloc[0])
+                    occupation = st.text_input("Occupation:", value=user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '')
+                    doctor = st.text_input("Doctor:", value=user_data['doctor'].iloc[0] if 'doctor' in user_data.columns else '')
+                    doctor_email = st.text_input("Doctor's Email:", value=user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '')
+                    emergency_contact_name = st.text_input("Emergency Contact Name:", value=user_data['emergency_contact_name'].iloc[0] if 'emergency_contact_name' in user_data.columns else '')
+
+                with col2:
+                    birthday = st.date_input("Birthday:", value=pd.to_datetime(user_data['birthday'].iloc[0]))
+                    address = st.text_area("Address:", value=user_data['address'].iloc[0] if 'address' in user_data.columns else '')
+                    email = st.text_input("Email:", value=user_data['email'].iloc[0] if 'email' in user_data.columns else '')
+                    emergency_contact_number = st.text_input("Emergency Contact Number:", value=user_data['emergency_contact_number'].astype(str).iloc[0] if 'emergency_contact_number' in user_data.columns else '')
+
+                if st.button("Save Changes"):
+                    formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
+                    
+                    #  Save or clear emergency contact number if empty
+                    if formatted_emergency_contact_number is not None:
+                        st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact_number'] = formatted_emergency_contact_number
+                    else:
+                        st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact_number'] = ''
+
+                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'name'] = name
+                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'birthday'] = birthday
+                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'address'] = address
+                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'occupation'] = occupation
+                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'email'] = email
+                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'doctor'] = doctor
+                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'doctor_email'] = doctor_email
+                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact_name'] = emergency_contact_name
+
+                    # Ensure phone number columns are treated as strings
+                    st.session_state.df_users['emergency_contact_number'] = st.session_state.df_users['emergency_contact_number'].astype(str)
+
+                    st.session_state.github.write_df(DATA_FILE, st.session_state.df_users, "updated user data")
+                    st.success("Profile updated successfully!")
+                    st.session_state.edit_profile = False
+                    st.experimental_rerun()
+
+                if st.button("Cancel"):
+                    st.session_state.edit_profile = False
+                    st.experimental_rerun()
+                    
+            else:
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write("Name:", user_data['name'].iloc[0])
+                    st.write("Occupation:", user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '')
+                    st.write("Doctor:", user_data['doctor'].iloc[0] if 'doctor' in user_data.columns else '')
+                    st.write("Doctor's Email:", user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '')
+                    st.write("Emergency Contact Name:", user_data['emergency_contact_name'].iloc[0] if 'emergency_contact_name' in user_data.columns else '')
+
+                with col2:
+                    st.write("Birthday:", user_data['birthday'].iloc[0])
+                    st.write("Address:", user_data['address'].iloc[0] if 'address' in user_data.columns else '')
+                    st.write("Email:", user_data['email'].iloc[0] if 'email' in user_data.columns else '')
+                    st.write("Emergency Contact Number:", format_phone_number(user_data['emergency_contact_number'].astype(str).iloc[0]) if 'emergency_contact_number' in user_data.columns else '')
+                
+                if st.button("Edit Profile"):
+                    st.session_state.edit_profile = True
+                    st.experimental_rerun()
+        else:
+            st.error("User data not found.")
+    else:
+        st.error("User not logged in.")
+        if st.button("Login/Register"):
+            st.switch_page("pages/2_Login.py")
+
+def format_phone_number(number):
+    """Format phone number using phonenumbers library."""
+    if not number or pd.isna(number) or number == 'nan':
+        return None
+    number_str = str(number).strip()
+    if number_str.endswith('.0'):
+        number_str = number_str[:-2]  # Remove trailing '.0'
+    try:
+        phone_number = phonenumbers.parse(number_str, "CH")  # "CH" is for Switzerland
+        if phonenumbers.is_valid_number(phone_number):
+            return phonenumbers.format_number(phone_number, phonenumbers.PhoneNumberFormat.E164)
+        else:
+            return number_str  # Return the original number if invalid
+            
+    except phonenumbers.NumberParseException:
+        return number_str  # Return the original number if parsing fails
+
+def display_emergency_contact():
+    """Display the emergency contact in the sidebar if it exists."""
+    if 'emergency_contact_name' in st.session_state and 'emergency_contact_number' in st.session_state:
+        emergency_contact_name = st.session_state['emergency_contact_name']
+        emergency_contact_number = st.session_state['emergency_contact_number']
+
+        if emergency_contact_number:
+            formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
+            st.sidebar.write(f"Emergency Contact: {emergency_contact_name}")
+            if formatted_emergency_contact_number:
+                st.sidebar.markdown(f"[{formatted_emergency_contact_number}](tel:{formatted_emergency_contact_number})")
+            else:
+                st.sidebar.write("No valid emergency contact number available.")
+        else:
+            st.sidebar.write("No emergency contact number available.")
+    else:
+        st.sidebar.write("No emergency contact information available.")
+
+def anxiety_assessment():
+    st.title("Anxiety Assessment")
+    if "step" not in st.session_state:
+        st.session_state.step = 1
+
+    if st.session_state.step == 1:
+        st.write("### Do you feel like you're having an Anxiety Attack right now?")
+        if st.button("Yes"):
+            st.switch_page("pages/4_Anxiety_Attack_Protocol.py")
+        if st.button("No"):
+            st.session_state.step = 2
+            st.experimental_rerun()
+
+    if st.session_state.step == 2:
+        st.write("### Are you anxious right now?")
+        if st.button("Yes "):
+            st.switch_page("pages/5_Anxiety_Protocol.py")
+        if st.button("No "):
+            st.session_state.step = 3
+            st.experimental_rerun()
+
+    if st.session_state.step == 3:
+        show_gif()
+        if st.button("Reassess your feelings"):
+            st.session_state.step = 1
+            st.experimental_rerun()
+
+def show_gif():
+    gif_url = "https://64.media.tumblr.com/28fad0005f6861c08f2c07697ff74aa4/tumblr_n4y0patw7Q1rn953bo1_500.gif"
+    gif_html = f'<img src="{gif_url}" style="width:100%;">'
+    st.markdown(gif_html, unsafe_allow_html=True)
+
+def german_protocols():
+    """Possibility to download the protocols in German, if needed for non-English speakers."""
+    st.title("German Protocols")
+    st.subheader("Anxiety Attack Protocol")
+    st.write("Click on the button to download the german version.")
+    st.write("Um die Deutsche PDF version des 'Anxiety Attack Protocol' herunterzuladen, auf 'Download Panickattacke Protokoll' klicken.")
+    with open("Panickattacke Protokoll.pdf", "rb") as pdf_file:
+        pdf_bytes = pdf_file.read()
+        st.download_button(
+            label="Download Panickattacke Protokoll",
+            data=pdf_bytes,
+            file_name="Panickattacke Protokoll.pdf",
+            mime="application/pdf",
+            key="download_panic_protocol"
+        )
+    st.write("---")
+    st.subheader("Anxiety Protocol")
+    st.write("Click on the button to download the german version.")
+    st.write("Um die Deutsche PDF version des 'Anxiety Protocol' herunterzuladen, auf 'Download Angstprotokoll' klicken.")
+    with open("Angstprotokoll.pdf", "rb") as pdf_file:
+        pdf_bytes = pdf_file.read()
+        st.download_button(
+            label="Download Angstprotokoll",
+            data=pdf_bytes,
+            file_name="Angstprotokoll.pdf",
+            mime="application/pdf",
+            key="download_anxiety_protocol"
+        )
+
+def show_saved_entries():
+    """Display the saved entries from the protocols."""
+    st.subheader("Saved Entries from Anxiety Attack Protocol")
+    username = st.session_state['username']
+    data_file_attack = f"{username}_anxiety_attack_data.csv"
+    data_file_anxiety = f"{username}_anxiety_protocol_data.csv"
+    
+    if st.session_state.github.file_exists(data_file_attack):
+        anxiety_attack_data = st.session_state.github.read_df(data_file_attack)
+        st.write(anxiety_attack_data)
+    else:
+        st.write("No saved entries from Anxiety Attack Protocol.")
+    
+    st.subheader("Saved Entries from Anxiety Protocol")
+    if st.session_state.github.file_exists(data_file_anxiety):
+        anxiety_protocol_data = st.session_state.github.read_df(data_file_anxiety)
+        st.write(anxiety_protocol_data)
+    else:
+        st.write("No saved entries from Anxiety Protocol.")
 
 if __name__ == "__main__":
     main()
