@@ -205,7 +205,6 @@ def german_protocols():
             data=pdf_bytes,
             file_name="Panickattacke_Protokoll.pdf",
             mime="application/pdf",
-            key="download_panic_protocol"
         )
     st.write("---")
     st.subheader("Anxiety Protocol")
@@ -218,7 +217,6 @@ def german_protocols():
             data=pdf_bytes,
             file_name="Angstprotokoll.pdf",
             mime="application/pdf",
-            key="download_anxiety_protocol"
         )
 
 def switch_page(page_name):
