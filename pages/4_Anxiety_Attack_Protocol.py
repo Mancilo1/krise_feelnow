@@ -40,10 +40,9 @@ def register_page():
         new_name = st.text_input("Name")
         new_password = st.text_input("New Password", type="password")
         if st.form_submit_button("Register"):
-            hashed_password = bcrypt.hashpw(new_password.encode('utf8'), bcrypt.gensalt())  # Hash the password
-            hashed_password_hex = binascii.hexlify(hashed_password).decode()  # Convert hash to hexadecimal string
-            
-            # Check if the username already exists
+            hashed_password = bcrypt.hashpw(new_password.encode('utf8'), bcrypt.gensalt())
+            hashed_password_hex = binascii.hexlify(hashed_password).decode()
+
             if new_username in st.session_state.df_users['username'].values:
                 st.error("Username already exists. Please choose a different one.")
                 return
@@ -51,7 +50,6 @@ def register_page():
                 new_user = pd.DataFrame([[new_username, new_name, hashed_password_hex]], columns=DATA_COLUMNS)
                 st.session_state.df_users = pd.concat([st.session_state.df_users, new_user], ignore_index=True)
                 
-                # Writes the updated dataframe to GitHub data repository
                 st.session_state.github.write_df(DATA_FILE, st.session_state.df_users, "added new user")
                 st.success("Registration successful! You can now log in.")
 
@@ -70,7 +68,13 @@ def login_page():
                 st.switch_page("pages/3_Profile.py")
 
 def authenticate(username, password):
-    """ Authenticate the user. """
+    """
+    Authenticate the user.
+
+    Parameters:
+    username (str): The username to authenticate.
+    password (str): The password to authenticate.
+    """
     login_df = st.session_state.df_users
     login_df['username'] = login_df['username'].astype(str)
 
@@ -139,9 +143,9 @@ def format_phone_number(number):
         if phonenumbers.is_valid_number(phone_number):
             return phonenumbers.format_number(phone_number, phonenumbers.PhoneNumberFormat.E164)
         else:
-            return number_str  # Return the original number if invalid
+            return number_str
     except phonenumbers.NumberParseException:
-        return number_str  # Return the original number if parsing fails
+        return number_str
 
 def display_emergency_contact():
     """Display the emergency contact in the sidebar if it exists."""
