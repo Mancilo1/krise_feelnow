@@ -59,8 +59,9 @@ def anxiety_attack_protocol():
     # Question 4: Triggers
     triggers = get_triggers_input()
 
-    # Question 5: Did something Help against the attack?
-    help_response = st.text_area("Did something help against the attack?", height=100)
+    st.subheader("Did something Help against the Anxiety?")
+    help_response = st.text_area("Write your response here", key="help_response", height=100)
+    
     col1, col2 = st.columns([0.8, 0.2])
     with col1:
         if st.button("Save Entry"):
