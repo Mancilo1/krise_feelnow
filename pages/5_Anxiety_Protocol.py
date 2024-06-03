@@ -131,17 +131,6 @@ def anxiety_protocol():
         if st.checkbox("Tremor"): symptoms_list.append("Tremor")
         if st.checkbox("Weakness"): symptoms_list.append("Weakness")
 
-    # Display existing symptoms
-    if 'symptoms' not in st.session_state:
-        st.session_state.symptoms = []
-
-    for symptom in st.session_state.symptoms:
-        st.write(symptom)
-
-    new_symptom = st.text_input("Add new symptom:", key="new_symptom")
-    if st.button("Add Symptom") and new_symptom:
-        st.session_state.symptoms.append(new_symptom)
-
     # Question 5: Did something Help against the attack?
     st.subheader("Did something Help against the Anxiety?")
     help_response = st.text_area("Write your response here", key="help_response", height=100)
