@@ -172,7 +172,7 @@ def anxiety_attack_protocol():
         if st.session_state.github.file_exists(data_file):
             st.session_state.anxiety_attack_data = st.session_state.github.read_df(data_file)
         else:
-            st.session_state.anxiety_attack_data = pd.DataFrame(columns=['Date', 'Time', 'Severity', 'Symptoms', 'Triggers', 'Help'])
+            st.session_state.anxiety_attack_data = pd.DataFrame(columns=['Date', 'Time', 'Severity', 'Symptoms', 'Triggers','New Trigger', 'Help'])
 
     st.title("Anxiety Attack Protocol")
 
@@ -187,6 +187,7 @@ def anxiety_attack_protocol():
 
     # Question 4: Triggers
     triggers = get_triggers_input()
+    new_triggers = get_new_triggers()
 
     st.subheader("Did something Help against the Anxiety?")
     help_response = st.text_area("Write your response here", key="help_response", height=100)
@@ -200,6 +201,7 @@ def anxiety_attack_protocol():
                 'Severity': [entry['severity'] for entry in st.session_state.time_severity_entries],
                 'Symptoms': symptoms,
                 'Triggers': triggers,
+                'New Trigger': new_trigger,
                 'Help': help_response
             }
             new_entry_df = pd.DataFrame([new_entry])
@@ -275,12 +277,14 @@ def get_symptoms_input():
 def get_triggers_input():
     st.subheader("Triggers:")
     triggers = st.multiselect("Select Triggers", ["Stress", "Caffeine", "Lack of Sleep", "Social Event", "Reminder of traumatic event", "Alcohol", "Conflict", "Family problems"])
-    
-    new_trigger = st.text_input("Add new trigger:")
+
+    return triggers
+
+def get_new_triggers
+    new_trigger = st.text_input("New Trigger:")
     if st.button("Add Trigger") and new_trigger:
         triggers.append(new_trigger)
     
-    return triggers
     return new_trigger
 
 if __name__ == "__main__":
