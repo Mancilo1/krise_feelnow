@@ -114,8 +114,8 @@ def main_page():
                 with col1:
                     name = st.text_input("Name:", value=user_data['name'].iloc[0], key="name")
                     occupation = st.text_input("Occupation:", value=user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '', key="occupation")
-                    doctor_email = st.text_input("Doctor's Email:", value=user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '', key="doctor_email")
                     doctor = st.text_input("Doctor:", value=user_data['doctor'].iloc[0] if 'doctor' in user_data.columns else '', key="doctor")
+                    doctor_email = st.text_input("Doctor's Email:", value=user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '', key="doctor_email")
                     emergency_contact = st.text_input("Emergency Contact:", value=user_data['emergency_contact'].iloc[0] if 'emergency_contact' in user_data.columns else '', key="emergency_contact")
 
                 with col2:
@@ -130,8 +130,8 @@ def main_page():
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'address'] = address
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'occupation'] = occupation
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'email'] = email
-                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'doctor_email'] = doctor_email
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'doctor'] = doctor
+                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'doctor_email'] = doctor_email
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact'] = emergency_contact
 
                     # Ensure phone number columns are treated as strings
@@ -151,8 +151,8 @@ def main_page():
                 with col1:
                     st.write("Name:", user_data['name'].iloc[0])
                     st.write("Occupation:", user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '')
-                    st.write("Doctor's Email:", user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '')
                     st.write("Doctor:", user_data['doctor'].iloc[0] if 'doctor' in user_data.columns else '')
+                    st.write("Doctor's Email:", user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '')
                     st.write("Emergency Contact:", user_data['emergency_contact'].iloc[0] if 'emergency_contact' in user_data.columns else '')
 
                 with col2:
