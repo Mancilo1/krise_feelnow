@@ -26,6 +26,8 @@ def init_credentials():
             st.session_state.df_users = st.session_state.github.read_df(DATA_FILE)
         else:
             st.session_state.df_users = pd.DataFrame(columns=DATA_COLUMNS)
+        # Ensure phone number columns are treated as strings
+        st.session_state.df_users['emergency_contact_number'] = st.session_state.df_users['emergency_contact_number'].astype(str)
 
 def register_page():
     """ Register a new user. """
@@ -131,12 +133,54 @@ def main():
         st.write("### You are already logged in")
         show_gif()
         st.sidebar.write(f"Logged in as {st.session_state['username']}")
+        # Retrieve the emergency contact information from the DataFrame
+        user_data = st.session_state.df_users.loc[st.session_state.df_users['username'] == st.session_state['username']]
+        if not user_data.empty:
+            st.session_state['emergency_contact_name'] = user_data['emergency_contact_name'].iloc[0] if 'emergency_contact_name' in user_data.columns else ''
+            st.session_state['emergency_contact_number'] = user_data['emergency_contact_number'].iloc[0] if 'emergency_contact_number' in user_data.columns else ''
+
         if st.sidebar.button("Logout"):
             st.session_state['authentication'] = False
             st.session_state.pop('username', None)
             st.switch_page("Main.py")
             
         st.sidebar.write("_Please reload Website after logging out_")
+
+        display_emergency_contact()
+
+def format_phone_number(number):
+    """Format phone number using phonenumbers library."""
+    if not number or pd.isna(number) or number == 'nan':
+        return None
+    number_str = str(number).strip()
+    if number_str.endswith('.0'):
+        number_str = number_str[:-2]  # Remove trailing '.0'
+    try:
+        phone_number = phonenumbers.parse(number_str, "CH")  # "CH" is for Switzerland
+        if phonenumbers.is_valid_number(phone_number):
+            return phonenumbers.format_number(phone_number, phonenumbers.PhoneNumberFormat.E164)
+        else:
+            return number_str  # Return the original number if invalid
+    except phonenumbers.NumberParseException:
+        return number_str  # Return the original number if parsing fails
+
+def display_emergency_contact():
+    """Display the emergency contact in the sidebar if it exists."""
+    if 'emergency_contact_name' in st.session_state and 'emergency_contact_number' in st.session_state:
+        emergency_contact_name = st.session_state['emergency_contact_name']
+        emergency_contact_number = st.session_state['emergency_contact_number']
+
+        if emergency_contact_number:
+            formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
+            st.sidebar.write(f"Emergency Contact: {emergency_contact_name}")
+            if formatted_emergency_contact_number:
+                st.sidebar.markdown(f"[{formatted_emergency_contact_number}](tel:{formatted_emergency_contact_number})")
+            else:
+                st.sidebar.write("No valid emergency contact number available.")
+        else:
+            st.sidebar.write("No emergency contact number available.")
+    else:
+        st.sidebar.write("No emergency contact information available.")
 
 def show_gif():
     gif_url = "https://media.tenor.com/5SMdPfjBuXwAAAAi/tomrobinson-tylastephens.gif"
