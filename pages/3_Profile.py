@@ -9,7 +9,7 @@ import datetime
 
 # Constants
 DATA_FILE = "MyLoginTable.csv"
-DATA_COLUMNS = ['username', 'name', 'birthday', 'password', 'address', 'occupation', 'email', 'doctor_email']
+DATA_COLUMNS = ['username', 'name', 'birthday', 'password', 'address', 'occupation', 'email', 'doctor_email', 'emergency_contact', 'emergency_contact_number']
 
 def init_github():
     """Initialize the GithubContents object."""
@@ -56,6 +56,8 @@ def register_page():
         new_occupation = st.text_input("Occupation")
         new_email = st.text_input("Email")
         new_doctor_email = st.text_input("Doctor's Email")
+        new_emergency_contact = st.text_input("Emergengy Contact")
+        new_emergency_contact_number = st.text_input("Emergency Contact Number")
         new_password = st.text_input("New Password", type="password")
         if st.form_submit_button("Register"):
             hashed_password = bcrypt.hashpw(new_password.encode('utf8'), bcrypt.gensalt())
@@ -64,7 +66,7 @@ def register_page():
             if new_username in st.session_state.df_users['username'].values:
                 st.error("Username already exists. Please choose a different one.")
             else:
-                new_user = pd.DataFrame([[new_username, new_name, new_birthday, hashed_password_hex, new_address, new_occupation, new_email, new_doctor_email]], columns=DATA_COLUMNS)
+                new_user = pd.DataFrame([[new_username, new_name, new_birthday, hashed_password_hex, new_address, new_occupation, new_email, new_doctor_email, new_emergency_contact, new_emergency_contact_number]], columns=DATA_COLUMNS)
                 st.session_state.df_users = pd.concat([st.session_state.df_users, new_user], ignore_index=True)
                 
                 st.session_state.github.write_df(DATA_FILE, st.session_state.df_users, "added new user")
@@ -112,11 +114,13 @@ def main_page():
                     name = st.text_input("Name:", value=user_data['name'].iloc[0], key="name")
                     occupation = st.text_input("Occupation:", value=user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '', key="occupation")
                     doctor_email = st.text_input("Doctor's Email:", value=user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '', key="doctor_email")
+                    emergency_contact = st.text_input("Emergency Contact:", value=user_data['emergency_contact'].iloc[0] if 'emergency_contact' in user_data.columns else '', key="emergency_contact")
 
                 with col2:
                     birthday = st.date_input("Birthday:", value=pd.to_datetime(user_data['birthday'].iloc[0]), key="birthday")
                     address = st.text_area("Address:", value=user_data['address'].iloc[0] if 'address' in user_data.columns else '', key="address")
                     email = st.text_input("Email:", value=user_data['email'].iloc[0] if 'email' in user_data.columns else '', key="email")
+                    emergency_contact_number = st.text_input("Emergency Contact Number:", value=user_data['emergency_contact_number'].astype(str).iloc[0] if 'emergency_contact_number' in user_data.columns else '', key="emergency_contact_number")
 
                 if st.button("Save Changes"):
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'name'] = name
@@ -125,6 +129,11 @@ def main_page():
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'occupation'] = occupation
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'email'] = email
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'doctor_email'] = doctor_email
+                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact'] = emergency_contact
+
+                    # Ensure phone number columns are treated as strings
+                    st.session_state.df_users['phone_number'] = st.session_state.df_users['phone_number'].astype(str)
+                    st.session_state.df_users['emergency_contact_number'] = st.session_state.df_users['emergency_contact_number'].astype(str)
 
                     st.session_state.github.write_df(DATA_FILE, st.session_state.df_users, "updated user data")
                     st.success("Profile updated successfully!")
@@ -140,11 +149,13 @@ def main_page():
                     st.write("Name:", user_data['name'].iloc[0])
                     st.write("Occupation:", user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '')
                     st.write("Doctor's Email:", user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '')
+                    st.write("Emergency Contact:", user_data['emergency_contact'].iloc[0] if 'emergency_contact' in user_data.columns else '')
 
                 with col2:
                     st.write("Birthday:", user_data['birthday'].iloc[0])
                     st.write("Address:", user_data['address'].iloc[0] if 'address' in user_data.columns else '')
                     st.write("Email:", user_data['email'].iloc[0] if 'email' in user_data.columns else '')
+                    st.write("Emergency Contact Number:", format_phone_number(user_data['emergency_contact_number'].astype(str).iloc[0]) if 'emergency_contact_number' in user_data.columns else '')
 
                 if st.button("Edit Profile"):
                     st.session_state.edit_profile = True
@@ -155,6 +166,22 @@ def main_page():
         st.error("User not logged in.")
         if st.button("Login/Register"):
             st.switch_page("pages/2_Login.py")
+
+def format_phone_number(number):
+    """Format phone number using phonenumbers library."""
+    if not number or pd.isna(number) or number == 'nan':
+        return None
+    number_str = str(number).strip()
+    if number_str.endswith('.0'):
+        number_str = number_str[:-2]  # Remove trailing '.0'
+    try:
+        phone_number = phonenumbers.parse(number_str, "CH")  # "CH" is for Switzerland
+        if phonenumbers.is_valid_number(phone_number):
+            return phonenumbers.format_number(phone_number, phonenumbers.PhoneNumberFormat.E164)
+        else:
+            return number_str  # Return the original number if invalid
+    except phonenumbers.NumberParseException:
+        return number_str  # Return the original number if parsing fails
 
 def anxiety_assessment():
     st.title("Anxiety Assessment")
