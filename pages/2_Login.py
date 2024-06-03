@@ -136,6 +136,8 @@ def main():
             st.session_state.pop('username', None)
             st.switch_page("Main.py")
             st.experimental_rerun()
+            
+        st.sidebar.write("_Please reload Website after logging out_")
 
 def show_gif():
     gif_url = "https://media.tenor.com/5SMdPfjBuXwAAAAi/tomrobinson-tylastephens.gif"
