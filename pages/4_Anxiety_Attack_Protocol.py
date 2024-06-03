@@ -26,6 +26,7 @@ def main():
             register_page()
     else:
         st.sidebar.write(f"Logged in as {st.session_state['username']}")
+        st.sidebar.write("Please reload Website after logging out")
         # Retrieve the emergency contact information from the DataFrame
         user_data = st.session_state.df_users.loc[st.session_state.df_users['username'] == st.session_state['username']]
         if not user_data.empty:
