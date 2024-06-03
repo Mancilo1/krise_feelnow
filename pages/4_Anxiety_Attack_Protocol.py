@@ -75,7 +75,7 @@ def anxiety_attack_protocol():
             }
             new_entry_df = pd.DataFrame([new_entry])
 
-            st.session_state.anxiety_data = pd.concat([st.session_state.anxiety_attack_data, new_entry_df], ignore_index=True)
+            st.session_state.anxiety_attack_data = pd.concat([st.session_state.anxiety_attack_data, new_entry_df], ignore_index=True)
 
             st.session_state.github.write_df(data_file, st.session_state.anxiety_attack_data, "added new entry")
             st.success("Entry saved successfully!")
