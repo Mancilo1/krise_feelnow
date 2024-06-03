@@ -57,7 +57,7 @@ def anxiety_attack_protocol():
     symptoms_list = []
     col1, col2 = st.columns(2)
     with col1:
-        if st.checkbox(("Anxiety"): symptoms_anxiety.append("Anxiety")
+        if st.checkbox("Anxiety"): symptoms_anxiety.append("Anxiety")
         if st.checkbox("Chest Pain"): symptoms_list.append("Chest Pain")
         if st.checkbox("Chills"): symptoms_list.append("Chills")
         if st.checkbox("Chocking"): symptoms_list.append("Chocking")
