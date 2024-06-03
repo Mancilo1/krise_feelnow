@@ -5,6 +5,7 @@ import pytz
 import datetime
 import pandas as pd
 from github_contents import GithubContents
+import phonenumbers
 
 # Constants
 DATA_FILE = "MyLoginTable.csv"
@@ -42,7 +43,7 @@ def anxiety_attack_protocol():
         if st.session_state.github.file_exists(data_file):
             st.session_state.data = st.session_state.github.read_df(data_file)
         else:
-            st.session_state.data = pd.DataFrame(columns=['Date', 'Time', 'Severity', 'Listed Symptoms','New Symptoms', 'Triggers', 'New Triggers', 'Help'])
+            st.session_state.data = pd.DataFrame(columns=['Date', 'Time', 'Severity', 'Symptoms','New Symptoms', 'Triggers', 'New Triggers', 'Help'])
 
     st.title("Anxiety Attack Protocol")
 
@@ -54,7 +55,6 @@ def anxiety_attack_protocol():
 
     # Question 3: Symptoms
     st.subheader("Symptoms:")
-    symptoms_list = []
     col1, col2 = st.columns(2)
     with col1:
         if st.checkbox("Anxiety"): symptoms_anxiety.append("Anxiety")
@@ -116,7 +116,7 @@ def anxiety_attack_protocol():
                 'Date': date_selected,
                 'Time': [entry['time'] for entry in st.session_state.time_severity_entries],
                 'Severity': [entry['severity'] for entry in st.session_state.time_severity_entries],
-                'Listed Symptoms': symptoms,
+                'Symptoms': symptoms,
                 'New Symptoms': new_symptoms,
                 'Triggers': triggers,
                 'New Triggers': new_triggers,
