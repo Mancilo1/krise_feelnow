@@ -188,9 +188,9 @@ def format_phone_number(number):
     if number_str.endswith('.0'):
         number_str = number_str[:-2]  # Remove trailing '.0'
     try:
-        phone_number = phonenumbers.parse(number_str, "CH")  # "CH" is for Switzerland
-        if phonenumbers.is_valid_number(phone_number):
-            return phonenumbers.format_number(phone_number, phonenumbers.PhoneNumberFormat.E164)
+        emergency_contact_number = phonenumbers.parse(number_str, "CH")  # "CH" is for Switzerland
+        if phonenumbers.is_valid_number(emergency_contact_number):
+            return phonenumbers.format_number(emergency_contact_number, phonenumbers.PhoneNumberFormat.E164)
         else:
             return number_str  # Return the original number if invalid
     except phonenumbers.NumberParseException:
@@ -198,13 +198,13 @@ def format_phone_number(number):
 
 def display_emergency_contact():
     """Display the emergency contact in the sidebar if it exists."""
-    if 'emergency_contact_name' in st.session_state and 'emergency_contact_number' in st.session_state:
-        emergency_contact_name = st.session_state['emergency_contact_name']
+    if 'emergency_contact' in st.session_state and 'emergency_contact_number' in st.session_state:
+        emergency_contact = st.session_state['emergency_contact']
         emergency_contact_number = st.session_state['emergency_contact_number']
 
         if emergency_contact_number:
             formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
-            st.sidebar.write(f"Emergency Contact: {emergency_contact_name}")
+            st.sidebar.write(f"Emergency Contact: {emergency_contact}")
             if formatted_emergency_contact_number:
                 st.sidebar.markdown(f"[{formatted_emergency_contact_number}](tel:{formatted_emergency_contact_number})")
             else:
@@ -331,6 +331,8 @@ def main():
         st.session_state.pop('username', None)
         st.switch_page("Main.py")
         st.experimental_rerun()
+
+    display_emergency_contact()
 
 if __name__ == "__main__":
     main()
