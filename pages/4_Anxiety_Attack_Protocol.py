@@ -172,7 +172,7 @@ def anxiety_attack_protocol():
         if st.session_state.github.file_exists(data_file):
             st.session_state.anxiety_attack_data = st.session_state.github.read_df(data_file)
         else:
-            st.session_state.anxiety_attack_data = pd.DataFrame(columns=['Date', 'Time', 'Severity', 'Symptoms', 'Triggers', 'Help'])
+            st.session_state.anxiety_attack_data = pd.DataFrame(columns=['Date', 'Time', 'Severity', 'Symptoms', 'Triggers', 'Other Triggers', 'Help'])
 
     st.title("Anxiety Attack Protocol")
 
@@ -187,6 +187,8 @@ def anxiety_attack_protocol():
 
     # Question 4: Triggers
     triggers = get_triggers_input()
+    st.subheader("Other Triggers?")
+    other_triggers = st.text_area("Write your response here", key="other_triggers", height=100)
 
     st.subheader("Did something Help against the Anxiety?")
     help_response = st.text_area("Write your response here", key="help_response", height=100)
@@ -200,6 +202,7 @@ def anxiety_attack_protocol():
                 'Severity': [entry['severity'] for entry in st.session_state.time_severity_entries],
                 'Symptoms': symptoms,
                 'Triggers': triggers,
+                'Other Triggers': other_triggers,
                 'Help': help_response
             }
             new_entry_df = pd.DataFrame([new_entry])
