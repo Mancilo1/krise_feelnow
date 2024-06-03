@@ -35,11 +35,12 @@ def main():
         anxiety_attack_protocol()
 
         if st.sidebar.button("Logout"):
-            st.sidebar.write("_Please reload Website after logging out_")
             st.session_state['authentication'] = False
             st.session_state.pop('username', None)
             st.switch_page("Main.py")
-
+            
+        st.sidebar.write("_Please reload Website after logging out_")
+        
         display_emergency_contact()
 
 def format_phone_number(number):
