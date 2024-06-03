@@ -170,7 +170,7 @@ def anxiety_protocol():
         if st.session_state.github.file_exists(data_file):
             st.session_state.anxiety_data = st.session_state.github.read_df(data_file)
         else:
-            st.session_state.anxiety_data = pd.DataFrame(columns=['Date', 'Location', 'Anxiety Description', 'Cause', 'Triggers', 'Symptoms', 'Help'])
+            st.session_state.anxiety_data = pd.DataFrame(columns=['Date', 'Location', 'Anxiety Description', 'Cause', 'Triggers', 'Symptoms', 'Add Symptoms', 'Help'])
 
     st.title("Anxiety Protocol")
 
@@ -196,6 +196,8 @@ def anxiety_protocol():
 
     # Question 6: Symptoms
     symptoms_list = symptoms_input()
+    st.subheader("Add Symptoms")
+    other_symptoms = st.text_area("Write your response here", key="other_symptoms", height=10)
 
     # Question 7: Did something Help
     st.subheader("Did something Help against the Anxiety?")
@@ -211,6 +213,7 @@ def anxiety_protocol():
                 'Cause': cause,
                 'Triggers': triggers,
                 'Symptoms': symptoms_list,
+                'Add Symptoms': other_symptoms,
                 'Help': help_response
             }
             new_entry_df = pd.DataFrame([new_entry])
