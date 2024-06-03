@@ -43,7 +43,7 @@ def anxiety_protocol():
         if st.session_state.github.file_exists(data_file):
             st.session_state.anxiety_data = st.session_state.github.read_df(data_file)
         else:
-            st.session_state.anxiety_data = pd.DataFrame(columns=['Date', 'Location', 'Anxiety Description', 'Cause', 'Triggers', 'Symptoms', 'Help'])
+            st.session_state.anxiety_data = pd.DataFrame(columns=['Date', 'Location', 'Anxiety Description', 'Cause', 'Triggers', 'Symptoms', 'New Symptoms', 'Help'])
 
     st.title("Anxiety Protocol")
 
@@ -94,12 +94,11 @@ def anxiety_protocol():
     if 'symptoms' not in st.session_state:
         st.session_state.symptoms = []
 
-    for symptom in st.session_state.symptoms:
-        st.write(symptom)
+    for symptoms in st.session_state.symptoms:
+        st.write(symptoms)
 
-    new_symptom = st.text_input("Add new symptom:", key="new_symptom")
-    if st.button("Add Symptom") and new_symptom:
-        st.session_state.symptoms.append(new_symptom)
+    st.subheader("Any Symptoms that are not listed?")
+    triggers = st.text_area("Write your response here", key="new_symptoms", height=100)
 
     # Question 5: Did something Help against the attack?
     st.subheader("Did something Help against the Anxiety?")
@@ -114,7 +113,8 @@ def anxiety_protocol():
                 'Anxiety Description': anxiety_description,
                 'Cause': cause,
                 'Triggers': triggers,
-                'Symptoms': ", ".join(symptoms_list),
+                'Symptoms': symptoms,
+                'New Symptoms': new_symptoms
                 'Help': help_response
             }
             new_entry_df = pd.DataFrame([new_entry])
