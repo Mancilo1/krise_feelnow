@@ -281,6 +281,7 @@ def get_triggers_input():
         triggers.append(new_trigger)
     
     return triggers
+    return new_trigger
 
 if __name__ == "__main__":
     main()
