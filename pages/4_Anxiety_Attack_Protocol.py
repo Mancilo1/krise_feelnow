@@ -192,6 +192,7 @@ def anxiety_attack_protocol():
     st.subheader("Add Triggers")
     other_triggers = st.text_area("Write your response here", key="other_triggers", height=10)
 
+    # Question 5: What Helped
     st.subheader("Did something Help against the Anxiety?")
     help_response = st.text_area("Write your response here", key="help_response", height=100)
     
