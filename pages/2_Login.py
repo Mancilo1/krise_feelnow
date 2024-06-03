@@ -131,45 +131,12 @@ def main():
             st.session_state['authentication'] = False
             st.session_state.pop('username', None)
             st.experimental_rerun()
+            st.switch_page("Main.py")
 
 def show_gif():
     gif_url = "https://media.tenor.com/5SMdPfjBuXwAAAAi/tomrobinson-tylastephens.gif"
     gif_html = f'<img src="{gif_url}" style="width:100%;">'
     st.markdown(gif_html, unsafe_allow_html=True)
-
-def format_phone_number(number):
-    """Format phone number using phonenumbers library."""
-    if not number or pd.isna(number) or number == 'nan':
-        return None
-    number_str = str(number).strip()
-    if number_str.endswith('.0'):
-        number_str = number_str[:-2]  # Remove trailing '.0'
-    try:
-        phone_number = phonenumbers.parse(number_str, "CH")  # "CH" is for Switzerland
-        if phonenumbers.is_valid_number(phone_number):
-            return phonenumbers.format_number(phone_number, phonenumbers.PhoneNumberFormat.E164)
-        else:
-            return number_str  # Return the original number if invalid
-    except phonenumbers.NumberParseException:
-        return number_str  # Return the original number if parsing fails
-
-def display_emergency_contact():
-    """Display the emergency contact in the sidebar if it exists."""
-    if 'emergency_contact_name' in st.session_state and 'emergency_contact_number' in st.session_state:
-        emergency_contact_name = st.session_state['emergency_contact_name']
-        emergency_contact_number = st.session_state['emergency_contact_number']
-
-        if emergency_contact_number:
-            formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
-            st.sidebar.write(f"Emergency Contact: {emergency_contact_name}")
-            if formatted_emergency_contact_number:
-                st.sidebar.markdown(f"[{formatted_emergency_contact_number}](tel:{formatted_emergency_contact_number})")
-            else:
-                st.sidebar.write("No valid emergency contact number available.")
-        else:
-            st.sidebar.write("No emergency contact number available.")
-    else:
-        st.sidebar.write("No emergency contact information available.")
 
 def switch_page(page_name):
     st.success(f"Redirecting to {page_name.replace('_', ' ')} page...")
@@ -179,4 +146,3 @@ def switch_page(page_name):
 
 if __name__ == "__main__":
     main()
-    display_emergency_contact()
