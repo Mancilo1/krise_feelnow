@@ -177,7 +177,7 @@ def format_phone_number(number):
         return number_str
 
 def display_emergency_contact():
-        """Display the emergency contact in the sidebar if it exists."""
+    """Display the emergency contact in the sidebar if it exists."""
     if 'emergency_contact_name' in st.session_state and 'emergency_contact_number' in st.session_state:
         emergency_contact_name = st.session_state['emergency_contact_name']
         emergency_contact_number = st.session_state['emergency_contact_number']
