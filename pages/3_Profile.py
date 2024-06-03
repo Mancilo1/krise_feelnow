@@ -89,7 +89,7 @@ def main_page():
     st.write("---")
     st.title("Your Anxiety Tracker Journal")
     st.subheader("Profile")
-
+    
     if 'username' in st.session_state:
         username = st.session_state['username']
 
@@ -147,7 +147,7 @@ def main_page():
             st.error("User data not found.")
     else:
         st.error("User not logged in.")
-        if st.button("Login/Register", key="login_register"):
+        if st.button("Login/Register"):
             st.switch_page("pages/2_Login.py")
 
 def anxiety_assessment():
