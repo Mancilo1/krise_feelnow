@@ -39,6 +39,8 @@ def main():
             st.session_state.pop('username', None)
             st.switch_page("Main.py")
 
+        st.sidebar.write("_Please reload Website after logging out_")
+        
         display_emergency_contact()
 
 def format_phone_number(number):
