@@ -134,7 +134,7 @@ def anxiety_attack_protocol():
             # Clear the severity entries after saving
             st.session_state.time_severity_entries = []
     with col2:
-        if st.button("Go Back to My Profile"):
+        if st.button("Back to My Profile"):
             st.switch_page("pages/3_Profile.py")
 
 def add_time_severity():
