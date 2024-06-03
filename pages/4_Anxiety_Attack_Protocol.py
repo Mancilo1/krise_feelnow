@@ -179,12 +179,6 @@ def get_symptoms_input():
         if st.checkbox("Trembling"): symptoms.append("Trembling")
         if st.checkbox("Tremor"): symptoms.append("Tremor")
         if st.checkbox("Weakness"): symptoms.append("Weakness")
-    
-    new_symptom = st.text_input("Add new symptom:")
-    if st.button("Add Symptom") and new_symptom:
-        symptoms.append(new_symptom)
-    
-    return symptoms
 
 def get_triggers_input():
     st.subheader("Triggers:")
