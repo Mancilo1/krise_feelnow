@@ -10,7 +10,7 @@ import phonenumbers
 
 # Constants
 DATA_FILE = "MyLoginTable.csv"
-DATA_COLUMNS = ['username', 'name', 'birthday', 'password', 'address', 'occupation', 'email', 'doctor', 'doctor_email', 'emergency_contact', 'emergency_contact_number']
+DATA_COLUMNS = ['username', 'name', 'birthday', 'password', 'address', 'occupation', 'email', 'doctor', 'doctor_email', 'emergency_contact_name', 'emergency_contact_number']
 
 def init_github():
     """Initialize the GithubContents object."""
@@ -60,7 +60,7 @@ def register_page():
         new_email = st.text_input("Email")
         new_doctor = st.text_input('Doctor')
         new_doctor_email = st.text_input("Doctor's Email")
-        new_emergency_contact = st.text_input("Emergengy Contact")
+        new_emergency_contact_name = st.text_input("Emergengy Contact Name")
         new_emergency_contact_number = st.text_input("Emergency Contact Number")
         new_password = st.text_input("New Password", type="password")
         if st.form_submit_button("Register"):
@@ -70,7 +70,7 @@ def register_page():
             if new_username in st.session_state.df_users['username'].values:
                 st.error("Username already exists. Please choose a different one.")
             else:
-                new_user = pd.DataFrame([[new_username, new_name, new_birthday, hashed_password_hex, new_address, new_occupation, new_email, new_doctor, new_doctor_email, new_emergency_contact, new_emergency_contact_number]], columns=DATA_COLUMNS)
+                new_user = pd.DataFrame([[new_username, new_name, new_birthday, hashed_password_hex, new_address, new_occupation, new_email, new_doctor, new_doctor_email, new_emergency_contact_name, new_emergency_contact_number]], columns=DATA_COLUMNS)
                 st.session_state.df_users = pd.concat([st.session_state.df_users, new_user], ignore_index=True)
                 
                 st.session_state.github.write_df(DATA_FILE, st.session_state.df_users, "added new user")
@@ -119,7 +119,7 @@ def main_page():
                     occupation = st.text_input("Occupation:", value=user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '', key="occupation")
                     doctor = st.text_input("Doctor:", value=user_data['doctor'].iloc[0] if 'doctor' in user_data.columns else '', key="doctor")
                     doctor_email = st.text_input("Doctor's Email:", value=user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '', key="doctor_email")
-                    emergency_contact = st.text_input("Emergency Contact:", value=user_data['emergency_contact'].iloc[0] if 'emergency_contact' in user_data.columns else '', key="emergency_contact")
+                    emergency_contact_name = st.text_input("Emergency Contact Name:", value=user_data['emergency_contact_name'].iloc[0] if 'emergency_contact_name' in user_data.columns else '', key="emergency_contact_name")
 
                 with col2:
                     birthday = st.date_input("Birthday:", value=pd.to_datetime(user_data['birthday'].iloc[0]), key="birthday")
@@ -143,7 +143,7 @@ def main_page():
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'email'] = email
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'doctor'] = doctor
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'doctor_email'] = doctor_email
-                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact'] = emergency_contact
+                    st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact_name'] = emergency_contact_name
 
                     # Ensure phone number columns are treated as strings
                     st.session_state.df_users['emergency_contact_number'] = st.session_state.df_users['emergency_contact_number'].astype(str)
@@ -163,7 +163,7 @@ def main_page():
                     st.write("Occupation:", user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '')
                     st.write("Doctor:", user_data['doctor'].iloc[0] if 'doctor' in user_data.columns else '')
                     st.write("Doctor's Email:", user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '')
-                    st.write("Emergency Contact:", user_data['emergency_contact'].iloc[0] if 'emergency_contact' in user_data.columns else '')
+                    st.write("Emergency Contact Name:", user_data['emergency_contact_name'].iloc[0] if 'emergency_contact_name' in user_data.columns else '')
 
                 with col2:
                     st.write("Birthday:", user_data['birthday'].iloc[0])
@@ -189,9 +189,9 @@ def format_phone_number(number):
     if number_str.endswith('.0'):
         number_str = number_str[:-2]  # Remove trailing '.0'
     try:
-        emergency_contact_number = phonenumbers.parse(number_str, "CH")  # "CH" is for Switzerland
-        if phonenumbers.is_valid_number(emergency_contact_number):
-            return phonenumbers.format_number(emergency_contact_number, phonenumbers.PhoneNumberFormat.E164)
+        phone_number = phonenumbers.parse(number_str, "CH")  # "CH" is for Switzerland
+        if phonenumbers.is_valid_number(phone_number):
+            return phonenumbers.format_number(phone_number, phonenumbers.PhoneNumberFormat.E164)
         else:
             return number_str  # Return the original number if invalid
     except phonenumbers.NumberParseException:
@@ -199,13 +199,13 @@ def format_phone_number(number):
 
 def display_emergency_contact():
     """Display the emergency contact in the sidebar if it exists."""
-    if 'emergency_contact' in st.session_state and 'emergency_contact_number' in st.session_state:
-        emergency_contact = st.session_state['emergency_contact']
+    if 'emergency_contact_name' in st.session_state and 'emergency_contact_number' in st.session_state:
+        emergency_contact_name = st.session_state['emergency_contact_name']
         emergency_contact_number = st.session_state['emergency_contact_number']
 
         if emergency_contact_number:
             formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
-            st.sidebar.write(f"Emergency Contact: {emergency_contact}")
+            st.sidebar.write(f"Emergency Contact: {emergency_contact_name}")
             if formatted_emergency_contact_number:
                 st.sidebar.markdown(f"[{formatted_emergency_contact_number}](tel:{formatted_emergency_contact_number})")
             else:
