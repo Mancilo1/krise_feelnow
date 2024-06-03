@@ -270,6 +270,8 @@ def get_symptoms_input():
         if st.checkbox("Tremor"): symptoms.append("Tremor")
         if st.checkbox("Weakness"): symptoms.append("Weakness")
 
+    return symptoms
+    
 def get_triggers_input():
     st.subheader("Triggers:")
     triggers = st.multiselect("Select Triggers", ["Stress", "Caffeine", "Lack of Sleep", "Social Event", "Reminder of traumatic event", "Alcohol", "Conflict", "Family problems"])
