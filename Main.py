@@ -63,7 +63,8 @@ def main():
         "## About this App\n"
         "This app is mainly used in English. If needed, there are files available for download after you have successfully logged in, which display the anxiety assessment protocols in German. You can use them as a reference and to help use the app, even if it is not in German. If you are not registered or logged in, you will not have access to the profile page and the anxiety assessment protocols. Once you are logged in, you will be redirected to your profile, where you will have access to your entries, personal data, and the anxiety assessment questions. You can use these questions or go directly to the anxiety assessment protocols if needed. You can log out anytime using the sidebar.\n\n"
         "## Information\n"
-        "By clicking on 'Information' in the sidebar menu, you have the possibility to inform yourself about mental health and anxiety disorders, as well as to look up some helpful tricks for your anxiety."
+        "By clicking on 'Information' in the sidebar menu, you have the possibility to inform yourself about mental health and anxiety disorders, as well as to look up some helpful tricks for your anxiety.\n"
+        "Be aware that the information and the linked websites are in English and therefore are only displayed in English."
     )
     
     # Translate the text
