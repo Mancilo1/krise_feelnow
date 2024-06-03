@@ -3,7 +3,6 @@ import pandas as pd
 import binascii
 import bcrypt
 import datetime
-import time
 import phonenumbers
 from github_contents import GithubContents
 from PIL import Image
