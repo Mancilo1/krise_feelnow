@@ -55,6 +55,7 @@ def anxiety_attack_protocol():
 
     # Question 3: Symptoms
     st.subheader("Symptoms:")
+    symptoms_list = []
     col1, col2 = st.columns(2)
     with col1:
         if st.checkbox("Anxiety"): symptoms_anxiety.append("Anxiety")
