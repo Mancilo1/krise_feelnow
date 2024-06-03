@@ -119,6 +119,7 @@ def main():
 
     if not st.session_state['authentication']:
         options = st.sidebar.selectbox("Select a page", ["Login", "Register"])
+        st.sidebar.write("_Please reload Website if you just logged out_")
         if options == "Login":
             login_page()
         elif options == "Register":
