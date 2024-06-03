@@ -98,7 +98,7 @@ def anxiety_protocol():
         st.write(symptoms)
 
     st.subheader("Any Symptoms that are not listed?")
-    new_symptoms = st.text_area("Write your response here", key="new_symptoms", height=50)
+    new_symptoms = st.text_area("Write your response here", key="new_symptoms", height=20)
 
     # Question 5: Did something Help against the attack?
     st.subheader("Did something Help against the Anxiety?")
