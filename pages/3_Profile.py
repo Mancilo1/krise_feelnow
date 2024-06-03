@@ -256,7 +256,7 @@ def main():
         st.write("---")
         show_saved_entries()
         
-        if st.sidebar.button("Logout", key="logout_button_sidebar"):
+        if st.sidebar.button("Logout"):
             st.session_state['authentication'] = False
             st.session_state.pop('username', None)
             st.switch_page("Main.py")
