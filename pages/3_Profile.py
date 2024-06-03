@@ -78,7 +78,13 @@ def login_page():
                 st.switch_page("pages/3_Profile.py")
 
 def authenticate(username, password):
-    """ Authenticate the user. """
+    """
+    Authenticate the user.
+
+    Parameters:
+    username (str): The username to authenticate.
+    password (str): The password to authenticate.
+    """
     login_df = st.session_state.df_users
     login_df['username'] = login_df['username'].astype(str)
 
