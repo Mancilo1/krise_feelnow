@@ -110,28 +110,32 @@ def anxiety_attack_protocol():
     st.subheader("Did something Help against the attack?")
     help_response = st.text_area("Write your response here", height=100)
 
-    if st.button("Save Entry"):
-        new_entry = {
-            'Date': date_selected,
-            'Time': [entry['time'] for entry in st.session_state.time_severity_entries],
-            'Severity': [entry['severity'] for entry in st.session_state.time_severity_entries],
-            'Symptoms': st.session_state.symptoms,
-            'Triggers': triggers,
-            'Help': help_response
-        }
-        st.switch_page("pages/3_Profile.py")
-        # Create a DataFrame from the new entry
-        new_entry_df = pd.DataFrame([new_entry])
+    col1, col2 = st.columns([0.8, 0.2])
+    with col1:
+        if st.button("Save Entry"):
+            new_entry = {
+                'Date': date_selected,
+                'Time': [entry['time'] for entry in st.session_state.time_severity_entries],
+                'Severity': [entry['severity'] for entry in st.session_state.time_severity_entries],
+                'Symptoms': st.session_state.symptoms,
+                'Triggers': triggers,
+                'Help': help_response
+            }
+            # Create a DataFrame from the new entry
+            new_entry_df = pd.DataFrame([new_entry])
         
-        # Append the new entry to the existing data DataFrame
-        st.session_state.data = pd.concat([st.session_state.data, new_entry_df], ignore_index=True)
+            # Append the new entry to the existing data DataFrame
+            st.session_state.data = pd.concat([st.session_state.data, new_entry_df], ignore_index=True)
         
-        # Save the updated DataFrame to the user's specific CSV file on GitHub
-        st.session_state.github.write_df(data_file, st.session_state.data, "added new entry")
-        st.success("Entry saved successfully!")
+            # Save the updated DataFrame to the user's specific CSV file on GitHub
+            st.session_state.github.write_df(data_file, st.session_state.data, "added new entry")
+            st.success("Entry saved successfully!")
 
-        # Clear the severity entries after saving
-        st.session_state.time_severity_entries = []
+            # Clear the severity entries after saving
+            st.session_state.time_severity_entries = []
+    with col2:
+        if st.button("Go Back to My Profile"):
+            st.switch_page("pages/3_Profile.py")
 
     # Display saved entries
     st.subheader("Saved Entries")
