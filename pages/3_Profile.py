@@ -199,13 +199,14 @@ def german_protocols():
     st.subheader("Anxiety Attack Protocol")
     st.write("Click on the button to download the german version.")
     st.write("Um die Deutsche PDF version des 'Anxiety Attack Protocol' herunterzuladen, auf 'Download Panickattacke Protokoll' klicken.")
-    with open("Panickattacke_Protokoll.pdf", "rb") as pdf_file:
+    with open("Panickattacke Protokoll.pdf", "rb") as pdf_file:
         pdf_bytes = pdf_file.read()
         st.download_button(
             label="Download Panickattacke Protokoll",
             data=pdf_bytes,
-            file_name="Panickattacke_Protokoll.pdf",
+            file_name="Panickattacke Protokoll.pdf",
             mime="application/pdf",
+            key="download_panic_protocol"
         )
     st.write("---")
     st.subheader("Anxiety Protocol")
@@ -218,6 +219,7 @@ def german_protocols():
             data=pdf_bytes,
             file_name="Angstprotokoll.pdf",
             mime="application/pdf",
+            key="download_anxiety_protocol"
         )
 
 def switch_page(page_name):
