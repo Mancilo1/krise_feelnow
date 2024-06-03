@@ -119,14 +119,13 @@ def main_page():
                     occupation = st.text_input("Occupation:", value=user_data['occupation'].iloc[0] if 'occupation' in user_data.columns else '', key="occupation")
                     doctor = st.text_input("Doctor:", value=user_data['doctor'].iloc[0] if 'doctor' in user_data.columns else '', key="doctor")
                     doctor_email = st.text_input("Doctor's Email:", value=user_data['doctor_email'].iloc[0] if 'doctor_email' in user_data.columns else '', key="doctor_email")
-                    
+                    emergency_contact = st.text_input("Emergency Contact:", value=user_data['emergency_contact'].iloc[0] if 'emergency_contact' in user_data.columns else '', key="emergency_contact")
+
                 with col2:
                     birthday = st.date_input("Birthday:", value=pd.to_datetime(user_data['birthday'].iloc[0]), key="birthday")
                     address = st.text_area("Address:", value=user_data['address'].iloc[0] if 'address' in user_data.columns else '', key="address")
                     email = st.text_input("Email:", value=user_data['email'].iloc[0] if 'email' in user_data.columns else '', key="email")
-                    
-                emergency_contact = st.text_input("Emergency Contact:", value=user_data['emergency_contact'].iloc[0] if 'emergency_contact' in user_data.columns else '', key="emergency_contact")
-                emergency_contact_number = st.text_input("Emergency Contact Number:", value=user_data['emergency_contact_number'].astype(str).iloc[0] if 'emergency_contact_number' in user_data.columns else '', key="emergency_contact_number")
+                    emergency_contact_number = st.text_input("Emergency Contact Number:", value=user_data['emergency_contact_number'].astype(str).iloc[0] if 'emergency_contact_number' in user_data.columns else '', key="emergency_contact_number")
 
                 if st.button("Save Changes"):
                     formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
@@ -252,7 +251,7 @@ def show_gif():
 def show_saved_entries():
     st.subheader("Saved Entries from Anxiety Attack Protocol")
     username = st.session_state['username']
-    data_file_attack = f"{username}_data.csv"
+    data_file_attack = f"{username}_attack_data.csv"
     data_file_anxiety = f"{username}_anxiety_protocol_data.csv"
     
     if st.session_state.github.file_exists(data_file_attack):
@@ -263,8 +262,8 @@ def show_saved_entries():
     
     st.subheader("Saved Entries from Anxiety Protocol")
     if st.session_state.github.file_exists(data_file_anxiety):
-        anxiety_data = st.session_state.github.read_df(data_file_anxiety)
-        st.write(anxiety_data)
+        anxiety_protocol_data = st.session_state.github.read_df(data_file_anxiety)
+        st.write(anxiety_protocol_data)
     else:
         st.write("No saved entries from Anxiety Protocol.")
 
@@ -318,7 +317,7 @@ def main():
         if not user_data.empty:
             st.session_state['emergency_contact'] = user_data['emergency_contact'].iloc[0] if 'emergency_contact' in user_data.columns else ''
             st.session_state['emergency_contact_number'] = user_data['emergency_contact_number'].iloc[0] if 'emergency_contact_number' in user_data.columns else ''
-            
+
         main_page()
         st.write("---")
         anxiety_assessment()
@@ -327,13 +326,13 @@ def main():
         st.write("---")
         show_saved_entries()
         
-        if st.sidebar.button("Logout"):
-            st.session_state['authentication'] = False
-            st.session_state.pop('username', None)
-            st.switch_page("Main.py")
-            st.experimental_rerun()
+    if st.sidebar.button("Logout"):
+        st.session_state['authentication'] = False
+        st.session_state.pop('username', None)
+        st.switch_page("Main.py")
+        st.experimental_rerun()
 
-        display_emergency_contact()
+    display_emergency_contact()
 
 if __name__ == "__main__":
     main()
