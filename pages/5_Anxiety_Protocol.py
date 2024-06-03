@@ -195,32 +195,7 @@ def anxiety_protocol():
     triggers = st.text_area("Write your response here", key="triggers", height=100)
 
     # Question 6: Symptoms
-    st.subheader("Symptoms:")
-    symptoms_list = []
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.checkbox("Chest Pain"): symptoms_list.append("Chest Pain")
-        if st.checkbox("Chills"): symptoms_list.append("Chills")
-        if st.checkbox("Cold"): symptoms_list.append("Cold")
-        if st.checkbox("Cold Hands"): symptoms_list.append("Cold Hands")
-        if st.checkbox("Dizziness"): symptoms_list.append("Dizziness")
-        if st.checkbox("Feeling of danger"): symptoms_list.append("Feeling of danger")
-        if st.checkbox("Heart racing"): symptoms_list.append("Heart racing")
-        if st.checkbox("Hot flushes"): symptoms_list.append("Hot flushes")
-        if st.checkbox("Nausea"): symptoms_list.append("Nausea")
-        if st.checkbox("Nervousness"): symptoms_list.append("Nervousness")
-    with col2:
-        if st.checkbox("Numb Hands"): symptoms_list.append("Numb Hands")
-        if st.checkbox("Numbness"): symptoms_list.append("Numbness")
-        if st.checkbox("Shortness of Breath"): symptoms_list.append("Shortness of Breath")
-        if st.checkbox("Sweating"): symptoms_list.append("Sweating")
-        if st.checkbox("Tense Muscles"): symptoms_list.append("Tense Muscles")
-        if st.checkbox("Tingly Hands"): symptoms_list.append("Tingly Hands")
-        if st.checkbox("Trembling"): symptoms_list.append("Trembling")
-        if st.checkbox("Tremor"): symptoms_list.append("Tremor")
-        if st.checkbox("Weakness"): symptoms_list.append("Weakness")
-            
-        return symptoms_list
+    symptoms_list = symptoms_input()
 
     # Question 7: Did something Help
     st.subheader("Did something Help against the Anxiety?")
@@ -248,6 +223,34 @@ def anxiety_protocol():
     with col2:
         if st.button("Back to My Profile"):
             st.switch_page("pages/3_Profile.py")
+
+def symptoms_input():
+    st.subheader("Symptoms:")
+    symptoms_list = []
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.checkbox("Chest Pain"): symptoms_list.append("Chest Pain")
+        if st.checkbox("Chills"): symptoms_list.append("Chills")
+        if st.checkbox("Cold"): symptoms_list.append("Cold")
+        if st.checkbox("Cold Hands"): symptoms_list.append("Cold Hands")
+        if st.checkbox("Dizziness"): symptoms_list.append("Dizziness")
+        if st.checkbox("Feeling of danger"): symptoms_list.append("Feeling of danger")
+        if st.checkbox("Heart racing"): symptoms_list.append("Heart racing")
+        if st.checkbox("Hot flushes"): symptoms_list.append("Hot flushes")
+        if st.checkbox("Nausea"): symptoms_list.append("Nausea")
+        if st.checkbox("Nervousness"): symptoms_list.append("Nervousness")
+    with col2:
+        if st.checkbox("Numb Hands"): symptoms_list.append("Numb Hands")
+        if st.checkbox("Numbness"): symptoms_list.append("Numbness")
+        if st.checkbox("Shortness of Breath"): symptoms_list.append("Shortness of Breath")
+        if st.checkbox("Sweating"): symptoms_list.append("Sweating")
+        if st.checkbox("Tense Muscles"): symptoms_list.append("Tense Muscles")
+        if st.checkbox("Tingly Hands"): symptoms_list.append("Tingly Hands")
+        if st.checkbox("Trembling"): symptoms_list.append("Trembling")
+        if st.checkbox("Tremor"): symptoms_list.append("Tremor")
+        if st.checkbox("Weakness"): symptoms_list.append("Weakness")
+            
+    return symptoms_list
 
 if __name__ == "__main__":
     main()
