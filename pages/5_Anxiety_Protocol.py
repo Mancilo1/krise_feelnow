@@ -40,10 +40,9 @@ def register_page():
         new_name = st.text_input("Name")
         new_password = st.text_input("New Password", type="password")
         if st.form_submit_button("Register"):
-            hashed_password = bcrypt.hashpw(new_password.encode('utf8'), bcrypt.gensalt())  # Hash the password
-            hashed_password_hex = binascii.hexlify(hashed_password).decode()  # Convert hash to hexadecimal string
+            hashed_password = bcrypt.hashpw(new_password.encode('utf8'), bcrypt.gensalt())
+            hashed_password_hex = binascii.hexlify(hashed_password).decode()
             
-            # Check if the username already exists
             if new_username in st.session_state.df_users['username'].values:
                 st.error("Username already exists. Please choose a different one.")
                 return
