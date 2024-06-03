@@ -73,18 +73,12 @@ def anxiety_attack_protocol():
                 'Triggers': triggers,
                 'Help': help_response
             }
-            # Create a DataFrame from the new entry
             new_entry_df = pd.DataFrame([new_entry])
-        
-            # Append the new entry to the existing data DataFrame
-            st.session_state.data = pd.concat([st.session_state.data, new_entry_df], ignore_index=True)
-        
-            # Save the updated DataFrame to the user's specific CSV file on GitHub
-            st.session_state.github.write_df(data_file, st.session_state.data, "added new entry")
-            st.success("Entry saved successfully!")
 
-            # Clear the severity entries after saving
-            st.session_state.time_severity_entries = []
+            st.session_state.anxiety_data = pd.concat([st.session_state.anxiety_attack_data, new_entry_df], ignore_index=True)
+
+            st.session_state.github.write_df(data_file, st.session_state.anxiety_attack_data, "added new entry")
+            st.success("Entry saved successfully!")
             
     with col2:
         if st.button("Back to My Profile"):
