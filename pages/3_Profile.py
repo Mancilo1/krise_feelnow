@@ -256,11 +256,11 @@ def main():
         st.write("---")
         show_saved_entries()
         
-        if st.sidebar.button("Logout"):
-            st.session_state['authentication'] = False
-            st.session_state.pop('username', None)
-            st.switch_page("Main.py")
-            st.experimental_rerun()
+    if st.sidebar.button("Logout"):
+        st.session_state['authentication'] = False
+        st.session_state.pop('username', None)
+        st.switch_page("Main.py")
+        st.experimental_rerun()
 
 if __name__ == "__main__":
     main()
