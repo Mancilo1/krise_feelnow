@@ -128,7 +128,7 @@ def main_page():
 
                 if st.button("Save Changes"):
                     formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
-
+                    
                     # Save or clear emergency contact number if empty
                     if formatted_emergency_contact_number is not None:
                         st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact_number'] = formatted_emergency_contact_number
@@ -169,7 +169,7 @@ def main_page():
                     st.write("Address:", user_data['address'].iloc[0] if 'address' in user_data.columns else '')
                     st.write("Email:", user_data['email'].iloc[0] if 'email' in user_data.columns else '')
                     st.write("Emergency Contact Number:", format_phone_number(user_data['emergency_contact_number'].astype(str).iloc[0]) if 'emergency_contact_number' in user_data.columns else '')
-
+                    
                 if st.button("Edit Profile"):
                     st.session_state.edit_profile = True
                     st.experimental_rerun()
