@@ -37,13 +37,13 @@ def main():
 
 def anxiety_attack_protocol():
     username = st.session_state['username']
-    data_file = f"{username}_attack_data.csv"
+    data_file = f"{username}_data.csv"
     
     if 'data' not in st.session_state:
         if st.session_state.github.file_exists(data_file):
             st.session_state.data = st.session_state.github.read_df(data_file)
         else:
-            st.session_state.data = pd.DataFrame(columns=['Date', 'Time', 'Severity', 'Symptoms','New Symptoms', 'Triggers', 'New Triggers', 'Help'])
+            st.session_state.data = pd.DataFrame(columns=['Date', 'Time', 'Severity', 'Symptoms', 'Triggers', 'Help'])
 
     st.title("Anxiety Attack Protocol")
 
@@ -54,62 +54,13 @@ def anxiety_attack_protocol():
     add_time_severity()
 
     # Question 3: Symptoms
-    st.subheader("Symptoms:")
-    symptoms_list = []
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.checkbox("Anxiety"): symptoms_anxiety.append("Anxiety")
-        if st.checkbox("Chest Pain"): symptoms_list.append("Chest Pain")
-        if st.checkbox("Chills"): symptoms_list.append("Chills")
-        if st.checkbox("Chocking"): symptoms_list.append("Chocking")
-        if st.checkbox("Cold"): symptoms_list.append("Cold")
-        if st.checkbox("Cold Hands"): symptoms_list.append("Cold Hands")
-        if st.checkbox("Dizziness"): symptoms_list.append("Dizziness")
-        if st.checkbox("Feeling of danger"): symptoms_list.append("Feeling of danger")
-        if st.checkbox("Feeling of dread"): symptoms_list.append("Feeling of dread")
-        if st.checkbox("Heart racing"): symptoms_list.append("Heart racing")
-        if st.checkbox("Hot flushes"): symptoms_list.append("Hot flushes")
-        if st.checkbox("Irrational thinking"): symptoms_list.append("Irrational thinking")
-    with col2:
-        if st.checkbox("Nausea"): symptoms_list.append("Nausea")
-        if st.checkbox("Nervousness"): symptoms_list.append("Nervousness")
-        if st.checkbox("Numb Hands"): symptoms_list.append("Numb Hands")
-        if st.checkbox("Numbness"): symptoms_list.append("Numbness")
-        if st.checkbox("Palpitations"): symptoms_list.append("Palpitations")
-        if st.checkbox("Shortness of Breath"): symptoms_list.append("Shortness of Breath")
-        if st.checkbox("Sweating"): symptoms_list.append("Sweating")
-        if st.checkbox("Tense Muscles"): symptoms_list.append("Tense Muscles")
-        if st.checkbox("Tingly Hands"): symptoms_list.append("Tingly Hands")
-        if st.checkbox("Trembling"): symptoms_list.append("Trembling")
-        if st.checkbox("Tremor"): symptoms_list.append("Tremor")
-        if st.checkbox("Weakness"): symptoms_list.append("Weakness")
-    
-    if 'symptoms' not in st.session_state:
-        st.session_state.symptoms = []
-
-    for symptoms in st.session_state.symptoms:
-        st.write(symptoms)
-
-    st.subheader("Any Symptoms that are not listed?")
-    new_symptoms = st.text_area("Write your response here", key="new_symptoms", height=50)
+    symptoms = get_symptoms_input()
 
     # Question 4: Triggers
-    st.subheader("Triggers:")
-    triggers = st.multiselect("Select Triggers", ["Stress", "Caffeine", "Lack of Sleep", "Social Event", "Reminder of traumatic event", "Alcohol", "Conflict", "Family problems"])
-    
-    if 'triggers' not in st.session_state:
-        st.session_state.triggers = []
-
-    for trigger in st.session_state.triggers:
-        st.write(trigger)
-
-    st.subheader("Any Triggers that are not listed?")
-    new_triggers = st.text_area("Write your response here", key="new_triggers", height=20)
+    triggers = get_triggers_input()
 
     # Question 5: Did something Help against the attack?
-    st.subheader("Did something Help against the attack?")
-    help_response = st.text_area("Write your response here", height=100)
-
+    help_response = st.text_area("Did something help against the attack?", height=100)
     col1, col2 = st.columns([0.8, 0.2])
     with col1:
         if st.button("Save Entry"):
@@ -118,9 +69,7 @@ def anxiety_attack_protocol():
                 'Time': [entry['time'] for entry in st.session_state.time_severity_entries],
                 'Severity': [entry['severity'] for entry in st.session_state.time_severity_entries],
                 'Symptoms': symptoms,
-                'New Symptoms': new_symptoms,
                 'Triggers': triggers,
-                'New Triggers': new_triggers,
                 'Help': help_response
             }
             # Create a DataFrame from the new entry
@@ -135,6 +84,7 @@ def anxiety_attack_protocol():
 
             # Clear the severity entries after saving
             st.session_state.time_severity_entries = []
+            
     with col2:
         if st.button("Back to My Profile"):
             st.switch_page("pages/3_Profile.py")
@@ -164,6 +114,53 @@ def add_time_severity():
     for entry in st.session_state.time_severity_entries:
         st.write(f"Time: {entry['time']}, Severity: {entry['severity']}")
 
+def get_symptoms_input():
+    st.subheader("Symptoms:")
+    col1, col2 = st.columns(2)
+    symptoms = []
+    with col1:
+        if st.checkbox("Anxiety"): symptoms.append("Anxiety")
+        if st.checkbox("Chest Pain"): symptoms.append("Chest Pain")
+        if st.checkbox("Chills"): symptoms.append("Chills")
+        if st.checkbox("Chocking"): symptoms.append("Chocking")
+        if st.checkbox("Cold"): symptoms.append("Cold")
+        if st.checkbox("Cold Hands"): symptoms.append("Cold Hands")
+        if st.checkbox("Dizziness"): symptoms.append("Dizziness")
+        if st.checkbox("Feeling of danger"): symptoms.append("Feeling of danger")
+        if st.checkbox("Feeling of dread"): symptoms.append("Feeling of dread")
+        if st.checkbox("Heart racing"): symptoms.append("Heart racing")
+        if st.checkbox("Hot flushes"): symptoms.append("Hot flushes")
+        if st.checkbox("Irrational thinking"): symptoms.append("Irrational thinking")
+    with col2:
+        if st.checkbox("Nausea"): symptoms.append("Nausea")
+        if st.checkbox("Nervousness"): symptoms.append("Nervousness")
+        if st.checkbox("Numb Hands"): symptoms.append("Numb Hands")
+        if st.checkbox("Numbness"): symptoms.append("Numbness")
+        if st.checkbox("Palpitations"): symptoms.append("Palpitations")
+        if st.checkbox("Shortness of Breath"): symptoms.append("Shortness of Breath")
+        if st.checkbox("Sweating"): symptoms.append("Sweating")
+        if st.checkbox("Tense Muscles"): symptoms.append("Tense Muscles")
+        if st.checkbox("Tingly Hands"): symptoms.append("Tingly Hands")
+        if st.checkbox("Trembling"): symptoms.append("Trembling")
+        if st.checkbox("Tremor"): symptoms.append("Tremor")
+        if st.checkbox("Weakness"): symptoms.append("Weakness")
+    
+    new_symptom = st.text_input("Add new symptom:")
+    if st.button("Add Symptom") and new_symptom:
+        symptoms.append(new_symptom)
+    
+    return symptoms
+
+def get_triggers_input():
+    st.subheader("Triggers:")
+    triggers = st.multiselect("Select Triggers", ["Stress", "Caffeine", "Lack of Sleep", "Social Event", "Reminder of traumatic event", "Alcohol", "Conflict", "Family problems"])
+    
+    new_trigger = st.text_input("Add new trigger:")
+    if st.button("Add Trigger") and new_trigger:
+        triggers.append(new_trigger)
+    
+    return triggers
+    
 def init_github():
     """Initialize the GithubContents object."""
     if 'github' not in st.session_state:
