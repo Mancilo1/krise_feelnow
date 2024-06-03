@@ -281,7 +281,7 @@ def get_triggers_input():
 
 def get_new_triggers():
     new_trigger = st.text_input("New Trigger:")
-    if st.button("Add Trigger") and new_trigger:
+    if st.button("Add Trigger"):
         triggers.append(new_trigger)
     return new_trigger
 
