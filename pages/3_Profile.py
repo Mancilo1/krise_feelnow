@@ -319,13 +319,13 @@ def main():
             st.session_state['emergency_contact_number'] = user_data['emergency_contact_number'].iloc[0] if 'emergency_contact_number' in user_data.columns else ''
 
 
-        main_page()
-        st.write("---")
-        anxiety_assessment()
-        st.write("---")
-        german_protocols()
-        st.write("---")
-        show_saved_entries()
+    main_page()
+    st.write("---")
+    anxiety_assessment()
+    st.write("---")
+    german_protocols()
+    st.write("---")
+    show_saved_entries()
         
     if st.sidebar.button("Logout"):
         st.session_state['authentication'] = False
