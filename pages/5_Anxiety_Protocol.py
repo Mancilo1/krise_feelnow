@@ -219,6 +219,8 @@ def anxiety_protocol():
         if st.checkbox("Trembling"): symptoms_list.append("Trembling")
         if st.checkbox("Tremor"): symptoms_list.append("Tremor")
         if st.checkbox("Weakness"): symptoms_list.append("Weakness")
+            
+    return symptoms
 
     # Question 7: Did something Help
     st.subheader("Did something Help against the Anxiety?")
@@ -233,7 +235,7 @@ def anxiety_protocol():
                 'Anxiety Description': anxiety_description,
                 'Cause': cause,
                 'Triggers': triggers,
-                'Symptoms': ", ".join(symptoms_list),
+                'Symptoms': symptoms,
                 'Help': help_response
             }
             new_entry_df = pd.DataFrame([new_entry])
