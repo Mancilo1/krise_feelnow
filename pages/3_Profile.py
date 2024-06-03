@@ -251,12 +251,12 @@ def show_gif():
 def show_saved_entries():
     st.subheader("Saved Entries from Anxiety Attack Protocol")
     username = st.session_state['username']
-    data_file_attack = f"{username}_attack_data.csv"
+    data_file_attack = f"{username}_anxiety_attack_data.csv"
     data_file_anxiety = f"{username}_anxiety_protocol_data.csv"
     
     if st.session_state.github.file_exists(data_file_attack):
-        attack_data = st.session_state.github.read_df(data_file_attack)
-        st.write(attack_data)
+        anxiety_attack_data = st.session_state.github.read_df(data_file_attack)
+        st.write(anxiety_attack_data)
     else:
         st.write("No saved entries from Anxiety Attack Protocol.")
     
