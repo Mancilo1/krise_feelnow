@@ -245,6 +245,7 @@ def main():
 
     if not st.session_state['authentication']:
         st.sidebar.write("Please log in")
+        st.switch_page("pages/2_Login.py")
     else:
         st.sidebar.write(f"Logged in as {st.session_state['username']}")
 
