@@ -83,11 +83,11 @@ def anxiety_attack_protocol():
         if st.checkbox("Tremor"): symptoms_list.append("Tremor")
         if st.checkbox("Weakness"): symptoms_list.append("Weakness")
     
-    if 'listed_symptoms' not in st.session_state:
+    if 'symptoms' not in st.session_state:
         st.session_state.symptoms = []
 
-    for listed_symptoms in st.session_state.symptoms:
-        st.write(listed_symptoms)
+    for symptoms in st.session_state.symptoms:
+        st.write(symptoms)
 
     st.subheader("Any Symptoms that are not listed?")
     new_symptoms = st.text_area("Write your response here", key="new_symptoms", height=50)
@@ -116,7 +116,7 @@ def anxiety_attack_protocol():
                 'Date': date_selected,
                 'Time': [entry['time'] for entry in st.session_state.time_severity_entries],
                 'Severity': [entry['severity'] for entry in st.session_state.time_severity_entries],
-                'Listed Symptoms': listed_symptoms,
+                'Listed Symptoms': symptoms,
                 'New Symptoms': new_symptoms,
                 'Triggers': triggers,
                 'New Triggers': new_triggers,
