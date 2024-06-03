@@ -137,10 +137,6 @@ def anxiety_attack_protocol():
         if st.button("Go Back to My Profile"):
             st.switch_page("pages/3_Profile.py")
 
-    # Display saved entries
-    st.subheader("Saved Entries")
-    st.write(st.session_state.data)
-
 def add_time_severity():
     if 'time_severity_entries' not in st.session_state:
         st.session_state.time_severity_entries = []
