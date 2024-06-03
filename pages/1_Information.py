@@ -61,7 +61,8 @@ def main():
     with col2:
         if st.button("Login/Register"):
             st.switch_page("pages/2_Login.py")
-            
+        st.sidebar.write("_Please reload Website if you just logged out_")
+
 def switch_page(page_name):
     st.success(f"Redirecting to {page_name.replace('_', ' ')} page...")
     time.sleep(3)
