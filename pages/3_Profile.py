@@ -330,12 +330,13 @@ def main():
         german_protocols()
         st.write("---")
         show_saved_entries()
+        
         if st.sidebar.button("Logout"):
             st.session_state['authentication'] = False
             st.session_state.pop('username', None)
             st.switch_page("Main.py")
-
-    st.sidebar.write("_Please reload Website after logging out_")
+            
+        st.sidebar.write("_Please reload Website after logging out_")
     
     display_emergency_contact()
 
