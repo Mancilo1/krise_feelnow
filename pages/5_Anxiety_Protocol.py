@@ -120,11 +120,12 @@ def anxiety_protocol():
             st.switch_page("pages/3_Profile.py")
             new_entry_df = pd.DataFrame([new_entry])
 
-                st.session_state.anxiety_data = pd.concat([st.session_state.anxiety_data, new_entry_df], ignore_index=True)
+            st.session_state.anxiety_data = pd.concat([st.session_state.anxiety_data, new_entry_df], ignore_index=True)
 
             st.session_state.github.write_df(data_file, st.session_state.anxiety_data, "added new entry")
             st.success("Entry saved successfully!")
-     with col2:
+
+    with col2:
         if st.button("Back to My Profile"):
             st.switch_page("pages/3_Profile.py")
 
