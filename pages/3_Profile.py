@@ -127,6 +127,14 @@ def main_page():
                     emergency_contact_number = st.text_input("Emergency Contact Number:", value=user_data['emergency_contact_number'].astype(str).iloc[0] if 'emergency_contact_number' in user_data.columns else '', key="emergency_contact_number")
 
                 if st.button("Save Changes"):
+                    formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
+
+                    # Save or clear emergency contact number if empty
+                    if formatted_emergency_contact_number is not None:
+                        st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact_number'] = formatted_emergency_contact_number
+                    else:
+                        st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact_number'] = ''
+
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'name'] = name
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'birthday'] = birthday
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'address'] = address
@@ -137,7 +145,6 @@ def main_page():
                     st.session_state.df_users.loc[st.session_state.df_users['username'] == username, 'emergency_contact'] = emergency_contact
 
                     # Ensure phone number columns are treated as strings
-                    st.session_state.df_users['phone_number'] = st.session_state.df_users['phone_number'].astype(str)
                     st.session_state.df_users['emergency_contact_number'] = st.session_state.df_users['emergency_contact_number'].astype(str)
 
                     st.session_state.github.write_df(DATA_FILE, st.session_state.df_users, "updated user data")
@@ -188,6 +195,24 @@ def format_phone_number(number):
             return number_str  # Return the original number if invalid
     except phonenumbers.NumberParseException:
         return number_str  # Return the original number if parsing fails
+
+def display_emergency_contact():
+    """Display the emergency contact in the sidebar if it exists."""
+    if 'emergency_contact_name' in st.session_state and 'emergency_contact_number' in st.session_state:
+        emergency_contact_name = st.session_state['emergency_contact_name']
+        emergency_contact_number = st.session_state['emergency_contact_number']
+
+        if emergency_contact_number:
+            formatted_emergency_contact_number = format_phone_number(emergency_contact_number)
+            st.sidebar.write(f"Emergency Contact: {emergency_contact_name}")
+            if formatted_emergency_contact_number:
+                st.sidebar.markdown(f"[{formatted_emergency_contact_number}](tel:{formatted_emergency_contact_number})")
+            else:
+                st.sidebar.write("No valid emergency contact number available.")
+        else:
+            st.sidebar.write("No emergency contact number available.")
+    else:
+        st.sidebar.write("No emergency contact information available.")
 
 def anxiety_assessment():
     st.title("Anxiety Assessment")
