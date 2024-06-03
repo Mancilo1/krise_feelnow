@@ -166,15 +166,15 @@ def format_phone_number(number):
         return None
     number_str = str(number).strip()
     if number_str.endswith('.0'):
-        number_str = number_str[:-2]  # Remove trailing '.0'
+        number_str = number_str[:-2]
     try:
-        phone_number = phonenumbers.parse(number_str, "CH")  # "CH" is for Switzerland
+        phone_number = phonenumbers.parse(number_str, "CH")
         if phonenumbers.is_valid_number(phone_number):
             return phonenumbers.format_number(phone_number, phonenumbers.PhoneNumberFormat.E164)
         else:
-            return number_str  # Return the original number if invalid
+            return number_str
     except phonenumbers.NumberParseException:
-        return number_str  # Return the original number if parsing fails
+        return number_str
 
 def display_emergency_contact():
     """Display the emergency contact in the sidebar if it exists."""
