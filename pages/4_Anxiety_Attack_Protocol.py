@@ -277,14 +277,12 @@ def get_symptoms_input():
 def get_triggers_input():
     st.subheader("Triggers:")
     triggers = st.multiselect("Select Triggers", ["Stress", "Caffeine", "Lack of Sleep", "Social Event", "Reminder of traumatic event", "Alcohol", "Conflict", "Family problems"])
-
     return triggers
 
-def get_new_triggers
+def get_new_triggers():
     new_trigger = st.text_input("New Trigger:")
     if st.button("Add Trigger") and new_trigger:
         triggers.append(new_trigger)
-    
     return new_trigger
 
 if __name__ == "__main__":
