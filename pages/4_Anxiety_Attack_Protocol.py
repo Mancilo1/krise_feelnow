@@ -282,7 +282,7 @@ def get_triggers_input():
 def get_new_triggers():
     new_trigger = st.text_input("New Trigger:")
     if st.button("Add Trigger"):
-        triggers.append(new_trigger)
+        st.session_state['new_triggers'].append(new_trigger)
     return new_trigger
 
 if __name__ == "__main__":
