@@ -105,8 +105,10 @@ def anxiety_protocol():
     st.subheader("Did something Help against the Anxiety?")
     help_response = st.text_area("Write your response here", key="help_response", height=100)
 
-    if st.button("Save Entry"):
-        new_entry = {
+    col1, col2 = st.columns([0.8, 0.2])
+    with col1:
+        if st.button("Save Entry"):
+            new_entry = {
             'Date': date_selected,
             'Location': location,
             'Anxiety Description': anxiety_description,
@@ -114,18 +116,17 @@ def anxiety_protocol():
             'Triggers': triggers,
             'Symptoms': ", ".join(symptoms_list),
             'Help': help_response
-        }
-        st.switch_page("pages/3_Profile.py")
-        new_entry_df = pd.DataFrame([new_entry])
+            }
+            st.switch_page("pages/3_Profile.py")
+            new_entry_df = pd.DataFrame([new_entry])
 
-        st.session_state.anxiety_data = pd.concat([st.session_state.anxiety_data, new_entry_df], ignore_index=True)
+                st.session_state.anxiety_data = pd.concat([st.session_state.anxiety_data, new_entry_df], ignore_index=True)
 
-        st.session_state.github.write_df(data_file, st.session_state.anxiety_data, "added new entry")
-        st.success("Entry saved successfully!")
-
-    # Display saved entries
-    st.subheader("Saved Entries")
-    st.write(st.session_state.anxiety_data)
+            st.session_state.github.write_df(data_file, st.session_state.anxiety_data, "added new entry")
+            st.success("Entry saved successfully!")
+     with col2:
+        if st.button("Back to My Profile"):
+            st.switch_page("pages/3_Profile.py")
 
 def add_time_severity():
     if 'time_severity_entries' not in st.session_state:
