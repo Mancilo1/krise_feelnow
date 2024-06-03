@@ -109,13 +109,13 @@ def anxiety_protocol():
     with col1:
         if st.button("Save Entry"):
             new_entry = {
-            'Date': date_selected,
-            'Location': location,
-            'Anxiety Description': anxiety_description,
-            'Cause': cause,
-            'Triggers': triggers,
-            'Symptoms': ", ".join(symptoms_list),
-            'Help': help_response
+                'Date': date_selected,
+                'Location': location,
+                'Anxiety Description': anxiety_description,
+                'Cause': cause,
+                'Triggers': triggers,
+                'Symptoms': ", ".join(symptoms_list),
+                'Help': help_response
             }
             st.switch_page("pages/3_Profile.py")
             new_entry_df = pd.DataFrame([new_entry])
